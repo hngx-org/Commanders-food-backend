@@ -48,7 +48,7 @@ Visit `http://localhost:8080/api/user/data` in your browser just to confirm rout
 Create a .env file inside the root of your application and include the following content:
 
 ```bash
-DATABASE_URL='mysql://root:@localhost:<add_your_port || 3306>/free-lunch'
+DATABASE_URL='mysql://root:<database password>@localhost:<add_your_port || 3306>/free-lunch'
 
 NODE_ENV="development"
 
