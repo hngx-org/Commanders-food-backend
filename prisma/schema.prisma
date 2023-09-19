@@ -11,7 +11,7 @@ datasource db {
 // ignore this for now, till the schema is finalized.
 
 model Users {
-    id              String   @id
+    id              String    @id @default(uuid())
     emailVerified   Boolean? @default(false)
     accountVerified Boolean? @default(false)
     email           String   @unique
