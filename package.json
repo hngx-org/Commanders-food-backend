@@ -1,0 +1,29 @@
+{
+  "name": "free-lunch",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "",
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js",
+    "migrate:prisma": "prisma migrate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Scaffolded using prospark",
+  "dependencies": {
+    "@prisma/client": "^4.12.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.22",
+    "prisma": "^4.12.0"
+  }
+}
