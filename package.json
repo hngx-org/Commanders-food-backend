@@ -6,7 +6,8 @@
     "test": "",
     "start": "node ./src/server.js",
     "dev": "nodemon ./src/server.js",
-    "prismaMigrate": "prisma migrate",
+    "dbPush": "prisma db push",
+    "prismaMigrate": "prisma migrate dev",
     "prismaGenerate": "prisma generate dev"
   },
   "keywords": [],
