@@ -20,6 +20,8 @@ The following log message should be displayed in console output:
 2023-04-17 23:14:38 PM [info] : Server started at http://localhost:8080
 ```
 
+> Note!! If the schema was updated, run the following command to apply the updated changes: `yarn run dbPush` or `npm run dbPush`
+
 Visit `http://localhost:8080/api/user/data` in your browser just to confirm routes are configured and working properly. If all is working properly, you should get the below response on browser.
 
 ```js
