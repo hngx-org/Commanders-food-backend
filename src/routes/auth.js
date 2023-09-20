@@ -1,7 +1,6 @@
-const express = require('express');
-const AuthController = require('../controller/auth');
-const useCatchErrors = require('../error/catchErrors');
-
+const express = require("express");
+const AuthController = require("../controller/auth");
+const useCatchErrors = require("../error/catchErrors");
 class AuthRoute {
   router = express.Router();
   authController = new AuthController();
@@ -23,10 +22,7 @@ class AuthRoute {
       useCatchErrors(this.authController.login.bind(this.authController))
     );
   }
-
-  initializeRoutes() {
-    // Route to get all users
+  };
   }
-}
 
 module.exports = AuthRoute;
