@@ -8,11 +8,100 @@ datasource db {
     relationMode = "prisma"
 }
 
-// ignore this for now, till the schema is finalized.
+// schema.prisma
+model User {
+    id                   String   @id @unique @map(name: "id")
+    org_id               String   @unique @map(name: "org_id")
+    first_name           String   @map(name: "first_name")
+    last_name            String   @map(name: "last_name")
+    profile_picture      String   @map(name: "profile_picture")
+    email                String
+    phonenumber          Int
+    password_hash        String   @map(name: "password_hash")
+    isAdmin              Boolean  @map(name: "isAdmin")
+    lunch_credit_balance String   @map(name: "lunch_credit_balance")
+    refresh_token        String   @map(name: "refresh_token")
+    updated_at           DateTime @map(name: "updated_at")
+    bank_number          String   @map(name: "bank_number")
+    bank_code            String   @map(name: "bank_code")
+    bank_name            String   @map(name: "bank_name")
+    created_at           DateTime @map(name: "created_at")
 
-model Users {
-    id              String   @id
-    emailVerified   Boolean? @default(false)
-    accountVerified Boolean? @default(false)
-    email           String   @unique
+    withdrawals    Withdrawal[]
+    organization   Organization?
+    sender_lunch   Lunch[]       @relation("sender")
+    receiver_lunch Lunch[]       @relation("receiver")
+
+    @@index([id])
+    @@index([org_id])
+    @@map(name: "users")
+}
+
+model Withdrawal {
+    id         String   @id @unique @map(name: "id")
+    user_id    String   @map(name: "user_id")
+    status     String
+    amount     BigInt
+    created_at DateTime
+    user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade) // N-M
+
+    @@index([id])
+    @@index([user_id])
+    @@map(name: "withdrawals")
+}
+
+model Organization {
+    id          String @id @unique @map(name: "id")
+    name        String
+    lunch_price String @map(name: "lunch_price")
+    currency    String
+
+    organization_invites OrganizationInvite[]
+    lunches              Lunch[]
+    user                 User                     @relation(fields: [id], references: [org_id], onDelete: Cascade) // N-N
+    organization_wallet  OrganizationLunchWallet?
+
+    @@map(name: "organization")
+}
+
+model OrganizationInvite {
+    id    String   @id @unique @map(name: "id")
+    email String
+    token String
+    TTL   DateTime
+
+    organization Organization @relation(fields: [id], references: [id], onDelete: Cascade) // N-M
+
+    @@map(name: "organization_invites")
+}
+
+model Lunch {
+    id         String   @id @unique @map(name: "id")
+    senderId   String   @map(name: "senderId")
+    receiverId String   @map(name: "receiverId")
+    quantity   Int
+    redeemed   Boolean  @map(name: "redeemed")
+    created_at DateTime @map(name: "created_at")
+    note       String
+    org_id     String
+
+    organization Organization @relation(fields: [org_id], references: [id], onDelete: Cascade)
+    sender       User         @relation("sender", fields: [senderId], references: [id], onDelete: Cascade) // N-M
+    receiver     User         @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade) // N-M
+
+    @@index([id])
+    @@index([senderId])
+    @@index([receiverId])
+    @@index([org_id])
+    @@map(name: "lunches")
+}
+
+model OrganizationLunchWallet {
+    id      String @id @unique @map(name: "id")
+    balance String
+    org_id  String @map(name: "org_id")
+
+    organization Organization @relation(fields: [id], references: [id], onDelete: Cascade)
+
+    @@map(name: "organization_lunch_wallet")
 }

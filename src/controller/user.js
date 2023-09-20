@@ -1,10 +1,11 @@
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient
 const BaseController = require("./base");
 
 class UserController extends BaseController {
   constructor() {
     super();
   }
-
   async getUser(req, res) {
     const userdata = [
       {
@@ -16,13 +17,7 @@ class UserController extends BaseController {
         email: "brian@mail.com",
       },
     ];
-    this.success(
-      res,
-      "--user/fake-data",
-      "user data fetched successfully",
-      200,
-      userdata
-    );
+    this.success(res, "user data fetched successfully", 200, userdata);
   }
 }
 
