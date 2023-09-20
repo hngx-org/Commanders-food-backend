@@ -18,11 +18,6 @@ class LunchRoute {
       isAuthenticated,//Make sure User is Authenticated
       useCatchErrors(this.lunchController.getAllLunch.bind(this.lunchController))
     );
-
-    this.router.get(
-      `${this.path}`,
-      useCatchErrors(this.lunchController.getLaunch.bind(this.lunchController))
-    );
   }
 }
 
