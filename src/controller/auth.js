@@ -95,7 +95,7 @@ class AuthController extends BaseController {
       return;
     }
 
-    const { id, org_id, first_name, last_name } = userExists;
+    const { id, org_id, first_name, last_name, isAdmin } = userExists;
 
     // resaon of generating this, is the auth_token would be used later when
     // updating organization info
@@ -122,6 +122,7 @@ class AuthController extends BaseController {
       refresh_token: refreshToken,
       id,
       name: `${first_name} ${last_name}`,
+      isAdmin,
     });
   }
 }
