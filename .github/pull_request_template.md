@@ -1,6 +1,8 @@
 <!--- Provide a general summary of your changes in the Title above -->
 
-​
+## Issue Number
+
+<!-- Add your issue number here starting with a Hashtag (#24) -->
 
 ## Description
 
@@ -20,8 +22,6 @@
 ## Motivation and Context
 
 <!--- Why is this change required? What problem does it solve? -->
-
-​
 
 ## How Has This Been Tested?
 
@@ -52,6 +52,5 @@
 - [ ] My code follows the code style of this project.
 - [ ] My change requires a change to the documentation.
 - [ ] I have updated the documentation accordingly.
-- [ ] I have read the **CONTRIBUTING** document.
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
