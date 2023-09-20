@@ -30,7 +30,7 @@ model User {
     created_at           DateTime @default(now()) @map(name: "created_at")
 
     withdrawals    Withdrawal[]
-    organization   Organization?
+    organization   Organization? @relation(fields: [org_id], references: [id], onDelete: Cascade)
     sender_lunch   Lunch[]       @relation("sender")
     receiver_lunch Lunch[]       @relation("receiver")
 
@@ -60,7 +60,7 @@ model Organization {
 
     organization_invites OrganizationInvite[]
     lunches              Lunch[]
-    user                 User                     @relation(fields: [id], references: [org_id], onDelete: Cascade) // N-N
+    user                 User[] // N-M
     organization_wallet  OrganizationLunchWallet?
 
     @@map(name: "organization")
