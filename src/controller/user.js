@@ -22,7 +22,7 @@ class UserController extends BaseController {
 
 	async getUserProfile(req, res) {
 		const { user_id } = req.params;
-
+		console.log(prisma)
 		const user = await prisma.user.findUnique({
 			where: { id: user_id },
 		});
