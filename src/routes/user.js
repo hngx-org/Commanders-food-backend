@@ -20,15 +20,13 @@ class UserRoute {
       isAuthenticated,
       useCatchErrors(this.userController.getProfileInfo.bind(this.userController))
     );
-  };
-  initializeRoutes() {
+
     // Route to get all users
     this.router.get(
       `${this.path}/users`, isAuthenticated,
       useCatchErrors(this.userController.allUsers.bind(this.userController))
     );
-
-}
+  };
 }
 
 module.exports = UserRoute;
