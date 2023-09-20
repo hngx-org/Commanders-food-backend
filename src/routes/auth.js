@@ -21,7 +21,16 @@ class AuthRoute {
       `${this.path}/login`,
       useCatchErrors(this.authController.login.bind(this.authController))
     );
-  }
-}
+  };
+
+  initializeRoutes() {
+    // Route to get all users
+    this.router.get(
+      `${this.path}/users`, 
+
+      useCatchErrors(this.userController.allUsers.bind(this.userController))
+    );
+
+  }}
 
 module.exports = AuthRoute;
