@@ -17,6 +17,23 @@ class UserRoute {
       useCatchErrors(this.userController.getUser.bind(this.userController))
     );
   }
+
+  initializeRoutes() {
+    // Route to update user's bank details
+    this.router.put(
+      `${this.path}/update-bank-details/:id`,
+      useCatchErrors(this.userController.updateUserBankDetails.bind(this.userController))
+    );
+  }
+
+  initializeRoutes() {
+    // Route to update user's bank details
+    this.router.patch(
+      `${this.path}/update-bank-details/:id`,
+      useCatchErrors(this.userController.updateUserBankDetails.bind(this.userController))
+    );
+  }
+
 }
 
 module.exports = UserRoute;
