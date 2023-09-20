@@ -23,6 +23,7 @@
     "joi": "^17.10.2",
     "jsonwebtoken": "^9.0.0",
     "short-uuid": "^4.2.2",
+    "shortid": "^2.2.16",
     "winston": "^3.8.2"
   },
   "devDependencies": {
