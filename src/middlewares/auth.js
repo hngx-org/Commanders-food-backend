@@ -37,7 +37,7 @@ async function isAdmin(req, res, next) {
   try {
     const { isAdmin } = await prisma.user.findFirstOrThrow({ where: { id: user_id } })
     if (!isAdmin) {
-      throw new Error(errormessage);
+      return res.status(403).json({ message: errormessage });
     }
     req.user.isAdmin = true;
     next()
