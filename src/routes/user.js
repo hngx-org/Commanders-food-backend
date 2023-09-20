@@ -1,39 +1,32 @@
 const express = require("express");
 const UserController = require("../controller/user");
 const useCatchErrors = require("../error/catchErrors");
+const {isAuthenticated} = require('../middlewares/auth')
 
 class UserRoute {
-  router = express.Router();
-  userController = new UserController();
-  path = "/user";
+	router = express.Router();
+	userController = new UserController();
+	path = "/user";
 
-  constructor() {
-    this.initializeRoutes();
-  }
+	constructor() {
+		this.initializeRoutes();
+	}
 
   initializeRoutes() {
+    // route for getting user profile information
+    
     this.router.get(
-      `${this.path}/data`,
-      useCatchErrors(this.userController.getUser.bind(this.userController))
+      `${this.path}/profile`,
+      isAuthenticated,
+      useCatchErrors(this.userController.getProfileInfo.bind(this.userController))
+    );
+
+    // Route to get all users
+    this.router.get(
+      `${this.path}/users`, isAuthenticated,
+      useCatchErrors(this.userController.allUsers.bind(this.userController))
     );
   }
-
-  initializeRoutes() {
-    // Route to update user's bank details
-    this.router.put(
-      `${this.path}/update-bank-details/:id`,
-      useCatchErrors(this.userController.updateUserBankDetails.bind(this.userController))
-    );
-  }
-
-  initializeRoutes() {
-    // Route to update user's bank details
-    this.router.patch(
-      `${this.path}/update-bank-details/:id`,
-      useCatchErrors(this.userController.updateUserBankDetails.bind(this.userController))
-    );
-  }
-
 }
 
 module.exports = UserRoute;
