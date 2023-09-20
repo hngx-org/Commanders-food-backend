@@ -1,5 +1,6 @@
 const { Prisma } = require("@prisma/client");
 const BaseController = require("./base");
+const prisma = require("../config/prisma")
 
 class LunchController extends BaseController {
   constructor() {
@@ -30,6 +31,25 @@ class LunchController extends BaseController {
       this.success(res, "Lunch request created successfully", 200, lunchData);
     }
   }
+  
+  async getAllLunch(req, res) {
+
+    const allLunchdata = await prisma.Lunch.findMany({
+        where: {
+            receiverId: req.user.user_id,//test value waiting for id from auth
+        },
+    });
+
+    if(allLunchdata.length == 0){
+        return this.success(
+            res,
+            "There are currently no Lunch data",
+            200,
+            allLunchdata
+        );
+    }
+  }
+  
 }
 
 module.exports = LunchController;
