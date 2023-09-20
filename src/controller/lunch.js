@@ -1,4 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
+const prisma = require("../config/prisma");
+const {isAuthenticated, isAdmin} = require("../middlewares/auth");
 const BaseController = require("./base");
 
 const checkIfUserExists = async (userId, prisma) => {
@@ -22,7 +23,7 @@ class LunchController extends BaseController {
   }
 
   async getLunch(req, res) {
-    const prisma = new PrismaClient();
+    
     const lunchId = req.params.id;
     const lunch = await prisma.lunch.findUnique({ where: { id: lunchId } });
 
