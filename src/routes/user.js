@@ -16,7 +16,15 @@ class UserRoute {
       `${this.path}/data`,
       useCatchErrors(this.userController.getUser.bind(this.userController))
     );
-  }
+  };
+  initializeRoutes() {
+    // Route to get all users
+    this.router.get(
+      `${this.path}/users`,
+      useCatchErrors(this.userController.allUsers.bind(this.userController))
+    );
+
+}
 }
 
 module.exports = UserRoute;
