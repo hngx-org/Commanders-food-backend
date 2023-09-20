@@ -11,12 +11,7 @@ class LunchRoute {
     this.initializeRoutes();
   }
 
-  initializeRoutes() {
-    this.router.get(
-      `${this.path}`,
-      useCatchErrors(this.lunchController.getLaunch.bind(this.lunchController))
-    );
-  }
+  initializeRoutes() {}
 }
 
 module.exports = LunchRoute;
