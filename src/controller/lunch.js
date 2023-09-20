@@ -1,4 +1,4 @@
-const BaseController = require('./base');
+const BaseController = require("./base");
 
 class LunchController extends BaseController {
   constructor() {
@@ -6,20 +6,20 @@ class LunchController extends BaseController {
   }
 
   // this is sample function to test route
-  async getLaunch(req, res) {
+  async getLunch(req, res) {
     const data = [
       {
-        id: 'id',
-        senderId: 'senderId',
-        receiverId: 'receiverId',
+        id: "id",
+        senderId: "senderId",
+        receiverId: "receiverId",
         quantity: 4,
         redeemed: false,
         created_at: new Date(),
-        note: 'note'
-      }
+        note: "note",
+      },
     ];
 
-    this.success(res, 'success', 200, data);
+    this.success(res, "success", 200, data);
   }
 }
 
