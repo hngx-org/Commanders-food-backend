@@ -12,7 +12,7 @@ class OrganizationRoute {
   }
 
   initializeRoutes() {
-    this.router.get(
+    this.router.post(
       `${this.path}/staff/signup`,
       useCatchErrors(
         this.organizationController.staffSignUp.bind(
