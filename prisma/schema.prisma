@@ -11,7 +11,7 @@ datasource db {
 // schema.prisma
 model User {
     id                   String   @id @unique @map(name: "id")
-    org_id               String   @unique @map(name: "org_id")
+    org_id               String   @map(name: "org_id")
     first_name           String   @map(name: "first_name")
     last_name            String   @map(name: "last_name")
     profile_picture      String?  @map(name: "profile_picture")
@@ -30,7 +30,7 @@ model User {
     created_at           DateTime @default(now()) @map(name: "created_at")
 
     withdrawals    Withdrawal[]
-    organization   Organization?
+    organization   Organization? @relation(fields: [org_id], references: [id], onDelete: Cascade)
     sender_lunch   Lunch[]       @relation("sender")
     receiver_lunch Lunch[]       @relation("receiver")
 
@@ -60,7 +60,7 @@ model Organization {
 
     organization_invites OrganizationInvite[]
     lunches              Lunch[]
-    user                 User                     @relation(fields: [id], references: [org_id], onDelete: Cascade) // N-N
+    user                 User[] // N-M
     organization_wallet  OrganizationLunchWallet?
 
     @@map(name: "organization")
