@@ -16,13 +16,7 @@ class UserController extends BaseController {
         email: "brian@mail.com",
       },
     ];
-    this.success(
-      res,
-      "--user/fake-data",
-      "user data fetched successfully",
-      200,
-      userdata
-    );
+    this.success(res, "user data fetched successfully", 200, userdata);
   }
 }
 

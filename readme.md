@@ -26,8 +26,6 @@ Visit `http://localhost:8080/api/user/data` in your browser just to confirm rout
 
 ```js
 {
-  "errorStatus": false,
-  "code": "--user/fake-data",
   "message": "user data fetched successfully",
   "statusCode": 200,
   "data": [
