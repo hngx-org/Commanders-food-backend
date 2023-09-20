@@ -11,7 +11,7 @@ datasource db {
 // schema.prisma
 model User {
     id                   String   @id @unique @map(name: "id")
-    org_id               String   @unique @map(name: "org_id")
+    org_id               String   @map(name: "org_id")
     first_name           String   @map(name: "first_name")
     last_name            String   @map(name: "last_name")
     profile_picture      String?  @map(name: "profile_picture")
