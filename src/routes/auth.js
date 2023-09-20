@@ -17,6 +17,10 @@ class AuthRoute {
       `${this.path}/user/signup`,
       useCatchErrors(this.authController.userSignup.bind(this.authController))
     );
+    this.router.post(
+      `${this.path}/login`,
+      useCatchErrors(this.authController.login.bind(this.authController))
+    );
   }
 }
 
