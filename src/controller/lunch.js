@@ -1,5 +1,4 @@
 const prisma = require("../config/prisma");
-const {isAuthenticated, isAdmin} = require("../middlewares/auth");
 const BaseController = require("./base");
 
 const checkIfUserExists = async (userId, prisma) => {
