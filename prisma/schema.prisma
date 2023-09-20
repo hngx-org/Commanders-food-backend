@@ -57,6 +57,7 @@ model Organization {
     currency    String
 
     organization_invites OrganizationInvite[]
+    lunches              Lunch[]
     user                 User                     @relation(fields: [id], references: [org_id], onDelete: Cascade) // N-N
     organization_wallet  OrganizationLunchWallet?
 
@@ -82,13 +83,16 @@ model Lunch {
     redeemed   Boolean  @map(name: "redeemed")
     created_at DateTime @map(name: "created_at")
     note       String
+    org_id     String
 
-    sender   User @relation("sender", fields: [senderId], references: [id], onDelete: Cascade) // N-M
-    receiver User @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade) // N-M
+    organization Organization @relation(fields: [org_id], references: [id], onDelete: Cascade)
+    sender       User         @relation("sender", fields: [senderId], references: [id], onDelete: Cascade) // N-M
+    receiver     User         @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade) // N-M
 
     @@index([id])
     @@index([senderId])
     @@index([receiverId])
+    @@index([org_id])
     @@map(name: "lunches")
 }
 
