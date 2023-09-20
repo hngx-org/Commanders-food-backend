@@ -16,7 +16,7 @@ model User {
     last_name            String   @map(name: "last_name")
     profile_picture      String?  @map(name: "profile_picture")
     email                String
-    phonenumber          Int
+    phonenumber          String
     password_hash        String   @map(name: "password_hash")
     isAdmin              Boolean  @default(false) @map(name: "isAdmin")
     lunch_credit_balance String?  @map(name: "lunch_credit_balance")
