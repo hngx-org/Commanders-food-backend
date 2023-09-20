@@ -19,7 +19,7 @@ model User {
     phonenumber          String
     password_hash        String   @map(name: "password_hash")
     isAdmin              Boolean  @default(false) @map(name: "isAdmin")
-    lunch_credit_balance String?  @map(name: "lunch_credit_balance")
+    lunch_credit_balance String?  @default("0") @map(name: "lunch_credit_balance")
     refresh_token        String   @map(name: "refresh_token") @db.VarChar(255)
     bank_number          String?  @map(name: "bank_number")
     bank_code            String?  @map(name: "bank_code")
