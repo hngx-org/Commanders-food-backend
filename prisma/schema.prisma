@@ -11,24 +11,26 @@ datasource db {
 // schema.prisma
 model User {
     id                   String   @id @unique @map(name: "id")
-    org_id               String   @unique @map(name: "org_id")
+    org_id               String   @map(name: "org_id")
     first_name           String   @map(name: "first_name")
     last_name            String   @map(name: "last_name")
-    profile_picture      String   @map(name: "profile_picture")
+    profile_picture      String?  @map(name: "profile_picture")
     email                String
-    phonenumber          Int
+    phonenumber          String
     password_hash        String   @map(name: "password_hash")
-    isAdmin              Boolean  @map(name: "isAdmin")
-    lunch_credit_balance String   @map(name: "lunch_credit_balance")
-    refresh_token        String   @map(name: "refresh_token")
-    updated_at           DateTime @map(name: "updated_at")
-    bank_number          String   @map(name: "bank_number")
-    bank_code            String   @map(name: "bank_code")
-    bank_name            String   @map(name: "bank_name")
-    created_at           DateTime @map(name: "created_at")
+    isAdmin              Boolean  @default(false) @map(name: "isAdmin")
+    lunch_credit_balance String?  @map(name: "lunch_credit_balance")
+    refresh_token        String   @map(name: "refresh_token") @db.VarChar(255)
+    bank_number          String?  @map(name: "bank_number")
+    bank_code            String?  @map(name: "bank_code")
+    bank_name            String?  @map(name: "bank_name")
+    bank_region          String?  @map(name: "bank_region")
+    currency_code        String?  @map(name: "currency_code")
+    updated_at           DateTime @default(now()) @map(name: "updated_at")
+    created_at           DateTime @default(now()) @map(name: "created_at")
 
     withdrawals    Withdrawal[]
-    organization   Organization?
+    organization   Organization? @relation(fields: [org_id], references: [id], onDelete: Cascade)
     sender_lunch   Lunch[]       @relation("sender")
     receiver_lunch Lunch[]       @relation("receiver")
 
@@ -38,12 +40,12 @@ model User {
 }
 
 model Withdrawal {
-    id         String   @id @unique @map(name: "id")
-    user_id    String   @map(name: "user_id")
+    id         String    @id @unique @map(name: "id")
+    user_id    String    @map(name: "user_id")
     status     String
     amount     BigInt
-    created_at DateTime
-    user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade) // N-M
+    created_at DateTime? @default(now())
+    user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade) // N-M
 
     @@index([id])
     @@index([user_id])
@@ -51,24 +53,24 @@ model Withdrawal {
 }
 
 model Organization {
-    id          String @id @unique @map(name: "id")
-    name        String
-    lunch_price String @map(name: "lunch_price")
-    currency    String
+    id          String  @id @unique @map(name: "id")
+    name        String?
+    lunch_price String? @map(name: "lunch_price")
+    currency    String?
 
     organization_invites OrganizationInvite[]
     lunches              Lunch[]
-    user                 User                     @relation(fields: [id], references: [org_id], onDelete: Cascade) // N-N
+    user                 User[] // N-M
     organization_wallet  OrganizationLunchWallet?
 
     @@map(name: "organization")
 }
 
 model OrganizationInvite {
-    id    String   @id @unique @map(name: "id")
-    email String
-    token String
-    TTL   DateTime
+    id    String    @id @unique @map(name: "id")
+    email String?
+    token String?
+    TTL   DateTime? @default(now())
 
     organization Organization @relation(fields: [id], references: [id], onDelete: Cascade) // N-M
 
