@@ -59,7 +59,7 @@ async function verifyOTP(req, res, next) {
     where: { token: otp_token }
   })?.token;
   if (!matchedOTP) {
-    res.status(400).json({ org_id, message: 'The OTP is invalid' });
+    res.status(400).json({ message: 'The OTP is invalid' });
   }
   req.user = { org_id };
   next();
