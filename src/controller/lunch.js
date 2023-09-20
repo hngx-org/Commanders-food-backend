@@ -1,6 +1,21 @@
-const { Prisma } = require("@prisma/client");
+const { PrismaClient } = require("@prisma/client");
 const BaseController = require("./base");
 
+const checkIfUserExists = async (userId, prisma) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  console.log(11, user);
+
+  if (user === null) {
+    return false;
+  } else {
+    return true;
+  }
+};
 class LunchController extends BaseController {
   constructor() {
     super();
@@ -33,10 +48,39 @@ class LunchController extends BaseController {
   }
 
   async send(req, res) {
-    const { receivers, quantity, note } = req.body;
+    const prisma = new PrismaClient();
 
-    if (!receivers && !quantity && !note) {
-      this.error(res, "Error completing request. Please add credentials", 301);
+    const { receivers, quantity, note } = req.body;
+    const existenceArray = [];
+
+
+    if(!receivers) {
+
+      this.error(res, "Please fill the receivers credential", 404);
+    }
+    //checks if all elements in the receivers array exist.
+    for (let i of receivers) {
+      existenceArray.push(await checkIfUserExists(i, prisma));
+    }
+
+    let allReceiversExist;
+
+    if (existenceArray.includes(false)) {
+      allReceiversExist = false;
+    }
+
+    console.log(56, allReceiversExist);
+
+    if (!allReceiversExist) {
+      this.error(res, "At least one potential receiver does not exist", 404);
+    }
+
+    if (quantity < 1) {
+      this.error(res, "Invalid quantity", 422);
+    }
+
+    if (!note) {
+      this.error(res, "Please enter a note", 422);
     }
 
     const data = {

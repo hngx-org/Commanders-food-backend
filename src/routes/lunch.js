@@ -14,7 +14,7 @@ class LunchRoute {
   initializeRoutes() {
     this.router.get(
       `${this.path}`,
-      useCatchErrors(this.lunchController.getLaunch.bind(this.lunchController))
+      useCatchErrors(this.lunchController.getLunch.bind(this.lunchController))
     );
 
     this.router.post(
