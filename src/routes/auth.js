@@ -17,20 +17,8 @@ class AuthRoute {
       `${this.path}/user/signup`,
       useCatchErrors(this.authController.userSignup.bind(this.authController))
     );
-    this.router.post(
-      `${this.path}/login`,
-      useCatchErrors(this.authController.login.bind(this.authController))
-    );
-  };
-
-  initializeRoutes() {
-    // Route to get all users
-    this.router.get(
-      `${this.path}/users`, 
-
-      useCatchErrors(this.userController.allUsers.bind(this.userController))
-    );
-
-  }}
+    this.router.post(`${this.path}/login`, useCatchErrors(this.authController.login.bind(this.authController)));
+  }
+}
 
 module.exports = AuthRoute;
