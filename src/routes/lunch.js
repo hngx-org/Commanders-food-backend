@@ -16,6 +16,11 @@ class LunchRoute {
       `${this.path}`,
       useCatchErrors(this.lunchController.getLaunch.bind(this.lunchController))
     );
+
+    this.router.post(
+      `${this.path}/send`,
+      useCatchErrors(this.lunchController.send.bind(this.lunchController))
+    )
   }
 }
 

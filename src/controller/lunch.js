@@ -1,4 +1,4 @@
-const BaseController = require('./base');
+const BaseController = require("./base");
 
 class LunchController extends BaseController {
   constructor() {
@@ -9,17 +9,31 @@ class LunchController extends BaseController {
   async getLaunch(req, res) {
     const data = [
       {
-        id: 'id',
-        senderId: 'senderId',
-        receiverId: 'receiverId',
+        id: "id",
+        senderId: "senderId",
+        receiverId: "receiverId",
         quantity: 4,
         redeemed: false,
         created_at: new Date(),
-        note: 'note'
-      }
+        note: "note",
+      },
     ];
 
-    this.success(res, 'success', 200, data);
+    this.success(res, "success", 200, data);
+  }
+
+  async send(req, res) {
+    const { receivers, quantity, note } = req.body;
+
+    if (!receivers && !quantity && !note) {
+      this.error(res, "Error completing request. Please add credentials", 301);
+    }
+
+    const data = {
+      receivers,
+      quantity,
+    };
+    this.success(res, "Lunch request created successfully", 201, data);
   }
 }
 
