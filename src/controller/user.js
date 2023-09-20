@@ -1,7 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient
 const BaseController = require("./base");
-const {isAuthenticated} = require('../middlewares/auth');
 
 class UserController extends BaseController {
   constructor() {
@@ -23,7 +22,6 @@ class UserController extends BaseController {
   // retrieve all users within the organization
   async allUsers(req, res) {
       // authenticate request
-      isAuthenticated(req, res, async () => {
         const organizationId = req.user.org_id;
   
         // Retrieve all users within the organization
@@ -46,11 +44,9 @@ class UserController extends BaseController {
             user_id: user.id
           }))
         };
-  
         // Send the response to the client
         this.success(res, payload.message, payload.statusCode, payload.data);
-      });
-    } 
+      }
   }
 
 module.exports = UserController;

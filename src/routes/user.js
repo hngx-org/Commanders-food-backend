@@ -1,6 +1,7 @@
 const express = require("express");
 const UserController = require("../controller/user");
 const useCatchErrors = require("../error/catchErrors");
+const {isAuthenticated} = require('../middlewares/auth')
 
 class UserRoute {
   router = express.Router();
@@ -20,7 +21,7 @@ class UserRoute {
   initializeRoutes() {
     // Route to get all users
     this.router.get(
-      `${this.path}/users`,
+      `${this.path}/users`, isAuthenticated,
       useCatchErrors(this.userController.allUsers.bind(this.userController))
     );
 
