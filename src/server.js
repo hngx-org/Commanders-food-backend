@@ -1,8 +1,9 @@
 const App = require("./app");
 const UserRoute = require("./routes/user");
 const LunchRoute = require("./routes/lunch");
-const WithdrawRoute = require("./routes/withdrawal");
+const OrganizationRoute = require("./routes/organization");
+const AuthRoute = require("./routes/auth");
 
 const server = new App();
-server.initializedRoutes([new UserRoute(), new LunchRoute(), new WithdrawRoute()]);
+server.initializedRoutes([new UserRoute(), new LunchRoute(), new AuthRoute(), new OrganizationRoute()]);
 server.listen();
