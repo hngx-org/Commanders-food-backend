@@ -4,13 +4,13 @@ const useCatchErrors = require("../error/catchErrors");
 const { isAuthenticated } = require("../middlewares/auth");
 
 class UserRoute {
-	router = express.Router();
-	userController = new UserController();
-	path = "/user";
+  router = express.Router();
+  userController = new UserController();
+  path = "/user";
 
-	constructor() {
-		this.initializeRoutes();
-	}
+  constructor() {
+    this.initializeRoutes();
+  }
 
 	initializeRoutes() {
 		//Route to get user profile
