@@ -1,4 +1,3 @@
-
 const nodemailer = require("nodemailer");
 const ENV = require("../config/env");
 
@@ -12,7 +11,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendEmail = async ({ from, to, subject, text }) => {
+const sendEmail = async ({ to, subject, text }) => {
   const email = await transporter.sendMail({
     from: ENV.smtpUsername,
     to,
