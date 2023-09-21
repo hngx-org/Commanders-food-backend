@@ -7,12 +7,14 @@ class UserController extends BaseController {
     super();
   }
 
+
   async getUserProfile(req, res) {
     const { user_id } = req.user;
 
     const user = await prisma.user.findUnique({
       where: { id: user_id },
     });
+
 
     if (!user) {
       const errorData = {
