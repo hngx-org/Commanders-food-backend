@@ -20,8 +20,7 @@ class AuthRoute {
       `${this.path}/login`,
       useCatchErrors(this.authController.login.bind(this.authController))
     );
-  };
-}
   }
+}
 
 module.exports = AuthRoute;
