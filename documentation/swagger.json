@@ -1,0 +1,42 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Free Lunch API",
+      "version": "1.0.0",
+      "description": "A brief description of your API.",
+      "contact": {
+        "name": "Team Commanders"
+      }
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Local development server"
+      },
+      {
+        "url": "https://api.example.com",
+        "description": "Production server"
+      }
+    ],
+    "paths": {
+      "/": {
+        "get": {
+          "summary": "Get a greeting",
+          "description": "Returns a friendly greeting message.",
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "content": {
+                "application/json": {
+                  "example": {
+                    "message": "Hello, Swagger!"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
