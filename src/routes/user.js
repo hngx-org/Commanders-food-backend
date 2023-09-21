@@ -14,11 +14,20 @@ class UserRoute {
 
   initializeRoutes() {
     // route for getting user profile information
-    
+
     this.router.get(
       `${this.path}/profile`,
       isAuthenticated,
-      useCatchErrors(this.userController.getProfileInfo.bind(this.userController))
+      useCatchErrors(
+        this.userController.getUserProfile.bind(this.userController)
+      )
+    );
+
+    // Route to get all users
+    this.router.get(
+      `${this.path}/all`,
+      isAuthenticated,
+      useCatchErrors(this.userController.allUsers.bind(this.userController))
     );
   }
 }

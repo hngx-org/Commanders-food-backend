@@ -1,7 +1,6 @@
 const express = require("express");
 const AuthController = require("../controller/auth");
 const useCatchErrors = require("../error/catchErrors");
-
 class AuthRoute {
   router = express.Router();
   authController = new AuthController();
@@ -21,7 +20,7 @@ class AuthRoute {
       `${this.path}/login`,
       useCatchErrors(this.authController.login.bind(this.authController))
     );
+  };
   }
-}
 
 module.exports = AuthRoute;

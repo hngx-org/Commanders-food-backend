@@ -44,51 +44,26 @@ class LunchController extends BaseController {
 
       this.success(res, "Lunch request created successfully", 200, lunchData);
     }
-    this.success(res, "success", 200, data);
   }
+  
+  async getAllLunch(req, res) {
 
-  async send(req, res) {
-    const prisma = new PrismaClient();
+    const allLunchdata = await prisma.Lunch.findMany({
+        where: {
+            receiverId: req.user.user_id,//test value waiting for id from auth
+        },
+    });
 
-    const { receivers, quantity, note } = req.body;
-    const existenceArray = [];
-
-
-    if(!receivers) {
-
-      this.error(res, "Please fill the receivers credential", 404);
+    if(allLunchdata.length == 0){
+        return this.success(
+            res,
+            "There are currently no Lunch data",
+            200,
+            allLunchdata
+        );
     }
-    //checks if all elements in the receivers array exist.
-    for (let i of receivers) {
-      existenceArray.push(await checkIfUserExists(i, prisma));
-    }
-
-    let allReceiversExist;
-
-    if (existenceArray.includes(false)) {
-      allReceiversExist = false;
-    }
-
-    console.log(56, allReceiversExist);
-
-    if (!allReceiversExist) {
-      this.error(res, "At least one potential receiver does not exist", 404);
-    }
-
-    if (quantity < 1) {
-      this.error(res, "Invalid quantity", 422);
-    }
-
-    if (!note) {
-      this.error(res, "Please enter a note", 422);
-    }
-
-    const data = {
-      receivers,
-      quantity,
-    };
-    this.success(res, "Lunch request created successfully", 201, data);
   }
+  
 }
 
 module.exports = LunchController;
