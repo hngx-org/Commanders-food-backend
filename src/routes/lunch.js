@@ -2,6 +2,7 @@ const express = require("express");
 const LunchController = require("../controller/lunch");
 const useCatchErrors = require("../error/catchErrors");
 const { isAuthenticated } = require("../middlewares/auth");
+const { PrismaClient } = require("@prisma/client");
 
 class LunchRoute {
   router = express.Router();
@@ -23,7 +24,7 @@ class LunchRoute {
     this.router.get(
       `${this.path}/send`,
       isAuthenticated,
-      useCatchErrors(this.lunchController.sendLunch.bind(this.lunchController))
+      useCatchErrors(this.lunchController.getLunch.bind(this.lunchController))
     );
   }
 }
