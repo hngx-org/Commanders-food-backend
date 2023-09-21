@@ -17,6 +17,12 @@ class UserRoute {
     this.router.get(
       `${this.path}/profile`,
       isAuthenticated,
+      useCatchErrors(this.userController.createBankDetailsForUser.bind(this.userController))
+    );
+
+    // Create user bank account details
+    this.router.post(
+      `${this.path}/bank-details`,
       useCatchErrors(this.userController.getUserProfile.bind(this.userController))
     );
 

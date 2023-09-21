@@ -32,30 +32,66 @@ class UserController extends BaseController {
       this.success(res, "User data fetched successfully", 200, userProfile);
     }
   }
-
+  
+  async createBankDetailsForUser(req, res) {
+    // Assuming the user's bank details are sent in the request body
+    const { userId } = req.params; // Assuming the user ID is in the route parameters
+    const bankDetails = req.body;
+  
+    // Check if the user with the specified ID exists
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+  
+    if (!existingUser) {
+      return this.error(res, `User with ID ${userId} does not exist`, 404);
+    }
+  
+      // Create or update the user's bank details
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          bank_number: bankDetails.bank_number,
+          bank_code: bankDetails.bank_code,
+          bank_name: bankDetails.bank_name,
+          bank_region: bankDetails.bank_region,
+          currency_code: bankDetails.currency_code,
+        },
+      });
+  
+      this.success(res, "User bank details updated successfully", 200, updatedUser);
+  }
+  
   async updateUserBankDetails(req, res) {
     // Assuming you have a route parameter for user ID
     const userId = req.params.id;
     // Assuming the updated bank details are sent in the request body
     const updatedBankDetails = req.body;
-
+  
     // Check if the user with the specified ID exists
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
     });
-
+  
     if (!existingUser) {
       return this.error(res, "User not found", 404);
     }
-
+  
     // Update the user's bank details
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       // Assuming the bank details properties match the Prisma User model
-      data: updatedBankDetails,
+      data: {
+        bank_number: updatedBankDetails.bank_number,
+        bank_code: updatedBankDetails.bank_code,
+        bank_name: updatedBankDetails.bank_name,
+        bank_region: updatedBankDetails.bank_region,
+        currency_code: updatedBankDetails.currency_code,
+      },
     });
+  
     this.success(res, "User bank details updated successfully", 200, updatedUser);
-  }
+  } 
 
   // Retrieve all users within the organization
   async allUsers(req, res) {
