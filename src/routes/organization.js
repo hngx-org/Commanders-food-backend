@@ -1,28 +1,28 @@
-const express = require("express");
-const OrganizationController = require("../controller/organization");
+const express = require('express');
+const OrganizationController = require('../controller/organization');
 const useCatchErrors = require("../error/catchErrors");
-const { verifyOTP } = require("../middlewares/auth");
+const { isAdmin } = require("../middlewares/auth")
 
 class OrganizationRoute {
   router = express.Router();
   organizationController = new OrganizationController();
-  path = "/organization";
+  path = '/organization';
 
   constructor() {
     this.initializeRoutes();
-  }
 
-  initializeRoutes() {
-    this.router.post(
-      `${this.path}/staff/signup`,
-      verifyOTP,
+    this.router.patch(
+      `${this.path}/wallet/update`,
+      isAdmin,
       useCatchErrors(
-        this.organizationController.staffSignUp.bind(
+        this.organizationController.updateOrgWalletBalance.bind(
           this.organizationController
         )
       )
     );
   }
+
+  initializeRoutes() {}
 }
 
 module.exports = OrganizationRoute;

@@ -13,7 +13,8 @@ class UserRoute {
   }
 
   initializeRoutes() {
-    //Route to get user profile
+    // route for getting user profile information
+
     this.router.get(
       `${this.path}/profile`,
       isAuthenticated,
@@ -27,15 +28,6 @@ class UserRoute {
       `${this.path}/all`,
       isAuthenticated,
       useCatchErrors(this.userController.allUsers.bind(this.userController))
-    );
-
-    // Route to search a user by Name or Email
-    this.router.get(
-      `${this.path}/search/:query`,
-      isAuthenticated,
-      useCatchErrors(
-        this.userController.searchUserByNameOrEmail.bind(this.userController)
-      )
     );
   }
 }

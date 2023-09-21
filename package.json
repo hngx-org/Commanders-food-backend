@@ -32,13 +32,5 @@
   },
   "prisma": {
     "schema": "./prisma/schema.prisma"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hngx-org/Commanders-food-backend.git"
-  },
-  "bugs": {
-    "url": "https://github.com/hngx-org/Commanders-food-backend/issues"
-  },
-  "homepage": "https://github.com/hngx-org/Commanders-food-backend#readme"
+  }
 }
