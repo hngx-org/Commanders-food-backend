@@ -187,7 +187,7 @@ class LunchController extends BaseController {
 
     
 
-    return this.success(res, "You have access", 200, responseData);
+    // return this.success(res, "You have access", 200, responseData);
   }
 }
 
