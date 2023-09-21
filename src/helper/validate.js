@@ -13,7 +13,13 @@ const LoginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const OrganizationSchema = Joi.object({
+  organization_name: Joi.string().required(),
+  lunch_price: Joi.string().allow(null,"")
+})
+
 module.exports = {
   UserSignupSchema,
   LoginSchema,
+  OrganizationSchema,
 };
