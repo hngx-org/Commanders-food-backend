@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const short = require("short-uuid");
 const prisma = new PrismaClient();
 const BaseController = require("./base");
-const { encryptPassword } = require("../helper/hashPassword");
+const { passwordManager } = require("../helper/index");
 
 class OrganizationController extends BaseController {
   constructor() {
@@ -13,11 +13,11 @@ class OrganizationController extends BaseController {
     const { email, password, otp_token, first_name, last_name, phone_number } =
       req.body;
 
-    const hashedPassword = await encryptPassword(password);
+    const hashedPassword = passwordManager.hash(password);
     const id = short.generate();
     const formattedDate = new Date().toISOString();
 
-    const newStaff = await prisma.User.create({
+    const newStaff = await prisma.user.create({
       data: {
         id,
         email,
