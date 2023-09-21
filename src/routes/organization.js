@@ -1,18 +1,31 @@
-const express = require('express');
-const OrganizationController = require('../controller/organization');
+const express = require("express");
+const OrganizationController = require("../controller/organization");
 const useCatchErrors = require("../error/catchErrors");
-const { isAdmin } = require("../middlewares/auth")
+const { verifyOTP, isAdmin, isAuthenticated } = require("../middlewares/auth");
 
 class OrganizationRoute {
   router = express.Router();
   organizationController = new OrganizationController();
-  path = '/organization';
+  path = "/organization";
 
   constructor() {
     this.initializeRoutes();
+  }
+
+  initializeRoutes() {
+    this.router.post(
+      `${this.path}/staff/signup`,
+      verifyOTP,
+      useCatchErrors(
+        this.organizationController.staffSignUp.bind(
+          this.organizationController
+        )
+      )
+    );
 
     this.router.patch(
       `${this.path}/wallet/update`,
+      isAuthenticated,
       isAdmin,
       useCatchErrors(
         this.organizationController.updateOrgWalletBalance.bind(
@@ -21,8 +34,6 @@ class OrganizationRoute {
       )
     );
   }
-
-  initializeRoutes() {}
 }
 
 module.exports = OrganizationRoute;
