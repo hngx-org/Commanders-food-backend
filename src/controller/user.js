@@ -68,30 +68,31 @@ class UserController extends BaseController {
   async searchUserByNameOrEmail(req, res) {
     const { query } = req.params;
 
-    const users = await prisma.user.findMany({
+    const user = await prisma.user.findUnique({
       where: {
         OR: [
-          { first_name: { contains: query, mode: "insensitive" } },
-          { last_name: { contains: query, mode: "insensitive" } },
-          { email: { contains: query, mode: "insensitive" } },
+          { first_name: query, mode: "insensitive" },
+          { last_name: query, mode: "insensitive" },
+          { email: query, mode: "insensitive" },
         ],
       },
       include: { organization: true }, // Optionally include organization details
     });
 
     const payload = {
-      message:
-        users.length > 0
-          ? "Users found based on the query"
-          : `No users found for the query: ${query}`,
-      statusCode: users.length > 0 ? 200 : 404,
-      data: users.map((user) => ({
-        name: `${user.first_name} ${user.last_name}`,
-        email: user.email,
-        profile_picture: user.profile_picture,
-        user_id: user.id,
-        organization: user.organization,
-      })),
+      message: user
+        ? "User found based on the query"
+        : `No user found for the query: ${query}`,
+      statusCode: user ? 200 : 404,
+      data: user
+        ? {
+            name: `${user.first_name} ${user.last_name}`,
+            email: user.email,
+            profile_picture: user.profile_picture,
+            user_id: user.id,
+            organization: user.organization,
+          }
+        : null,
     };
 
     this.success(res, payload.message, payload.statusCode, payload.data);
