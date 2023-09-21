@@ -4,6 +4,7 @@ const env = require("./config/env.js");
 const { requestLogger } = require("./middlewares/logger.js");
 const bodyParser = require("body-parser");
 const HandleErrors = require("./middlewares/error.js");
+const {isAuthenticated} = require("./middlewares/auth.js");
 const logger = require("./config/logger.js");
 const ENV = require("./config/env.js");
 
@@ -30,6 +31,7 @@ class App {
     );
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
+    
   }
 
   listen() {
