@@ -48,6 +48,7 @@ class LunchController extends BaseController {
             allLunchdata
         );
     }
+    this.success(res, "All Lunch data fetched successfully", 200, allLunchdata);
   }
   
 }
