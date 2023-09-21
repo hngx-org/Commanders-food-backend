@@ -16,7 +16,7 @@ class AuthController extends BaseController {
       return this.error(res, error.message, 400);
     }
 
-    const { email, password, first_name, last_name, phone_number } = payload;
+    const { email, password, first_name, last_name, phonenumber } = payload;
 
     // check if user exists of not
     const userExists = await prisma.user.findMany({ where: { email } });
@@ -47,7 +47,7 @@ class AuthController extends BaseController {
         first_name,
         last_name,
         profile_picture: profilePic,
-        phonenumber: phone_number,
+        phonenumber,
         password_hash: pwdHash,
         refresh_token: refreshToken,
         isAdmin: true,
@@ -55,13 +55,11 @@ class AuthController extends BaseController {
         org_id,
         created_at: new Date(),
         updated_at: new Date(),
-      },
-    });
-
-    await prisma.organization.create({
-      data: {
-        lunch_price: String(1000),
-        id: org_id,
+        organization: {
+          create: {
+            lunch_price: String(1000),
+          },
+        },
       },
     });
 
@@ -108,12 +106,6 @@ class AuthController extends BaseController {
     const accessToken = JwtTokenManager.genRefreshToken({
       user_id: id,
       org_id,
-    });
-
-    // update user ref_token
-    await prisma.user.update({
-      where: { id: id },
-      data: { refresh_token: refreshToken },
     });
 
     // update refresh token
