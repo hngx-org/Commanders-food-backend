@@ -1,3 +1,4 @@
+
 const BaseController = require("./base");
 const prisma = require("../config/prisma");
 
@@ -181,7 +182,7 @@ class LunchController extends BaseController {
       responseData.push(data);
     }
 
-    return this.success(res, "Lunch transfer was successful", 200, responseData);
+    return this.success(res, "Lunch transfer was successful", 201, responseData);
   }
 }
 
