@@ -41,7 +41,7 @@ class AuthController extends BaseController {
       org_id,
     });
 
-    await prisma.user.create({
+    const createUser = prisma.user.create({
       data: {
         id: user_id,
         first_name,
@@ -55,13 +55,31 @@ class AuthController extends BaseController {
         org_id,
         created_at: new Date(),
         updated_at: new Date(),
-        organization: {
-          create: {
-            lunch_price: String(1000),
-          },
-        },
       },
     });
+
+    // create organization
+    const createOrganization = prisma.organization.create({
+      data: {
+        lunch_price: String(1000),
+        id: org_id,
+      },
+    });
+
+    // create organization default wallet
+    const createOrgWallet = prisma.organizationLunchWallet.create({
+      data: {
+        id: shortId.generate(),
+        balance: String(1000),
+        org_id,
+      },
+    });
+
+    await prisma.$transaction([
+      createUser,
+      createOrganization,
+      createOrgWallet,
+    ]);
 
     this.success(res, "successfully", 200, {
       access_token: accessToken,
@@ -84,7 +102,7 @@ class AuthController extends BaseController {
     const userExists = await prisma.user.findFirst({ where: { email } });
 
     if (userExists === null) {
-      return this.error(res, "user with this email already exists.", 400);
+      return this.error(res, "Account notfound.", 400);
     }
 
     // compare password
