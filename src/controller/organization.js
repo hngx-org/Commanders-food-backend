@@ -5,8 +5,6 @@ class OrganizationController extends BaseController {
         super();
     }
     async updateOrgWalletBalance(req, res) {
-        const user = req.user;
-      
           const {org_id} = req.query
           const balance = req.body.balance
           let newBalance = parseInt(balance)

@@ -21,7 +21,6 @@ class OrganizationRoute {
       )
     );
   }
-
   initializeRoutes() {}
 }
 
