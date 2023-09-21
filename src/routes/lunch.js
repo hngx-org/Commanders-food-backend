@@ -1,7 +1,7 @@
 const express = require("express");
 const LunchController = require("../controller/lunch");
 const useCatchErrors = require("../error/catchErrors");
-const {isAuthenticated} = require("../middlewares/auth")
+const { isAuthenticated } = require("../middlewares/auth");
 
 class LunchRoute {
   router = express.Router();
@@ -15,8 +15,15 @@ class LunchRoute {
   initializeRoutes() {
     this.router.get(
       `${this.path}/all`,
-      isAuthenticated,//Make sure User is Authenticated
-      useCatchErrors(this.lunchController.getAllLunch.bind(this.lunchController))
+      isAuthenticated, //Make sure User is Authenticated
+      useCatchErrors(
+        this.lunchController.getAllLunch.bind(this.lunchController)
+      )
+    );
+    this.router.get(
+      `${this.path}/send`,
+      isAuthenticated,
+      useCatchErrors(this.lunchController.sendLunch.bind(this.lunchController))
     );
   }
 }
