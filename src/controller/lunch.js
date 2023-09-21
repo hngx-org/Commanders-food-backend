@@ -180,8 +180,6 @@ class LunchController extends BaseController {
 
       responseData.push(data);
     }
-
-    return this.success(res, "Lunch transfer was successful", 200, responseData);
   }
 }
 
