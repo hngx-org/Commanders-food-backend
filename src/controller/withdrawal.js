@@ -1,73 +1,116 @@
 const prisma = require('../config/prisma');
 const BaseController = require("./base");
+const WithdrawalRequestSchema = require('../helper/validate');
 
 class WithdrawalController extends BaseController {
   constructor() {
     super();
   }
+
   async requestWithdrawal(req, res) {
     //get info from req.body
-    const { bank_name, bank_number, bank_code, amount } = req.body;
+    const payload = req.body;
+    const { error } = WithdrawalRequestSchema.validate(payload);
 
-    //check for missing fields
-    if(!bank_name || !bank_number || bank_code || amount) {
-      this.error(res, 
-        "--required field missing in request body", 
-        400,
-        {
-          error: "required field missing in request body"
-        }
-      ) 
+    // validate request body
+    if (error) {
+      return this.error(res, error.message, 400);
     }
-    //create a withdrawal request in withdrawals table
-    const user_id = null; // insert user from auth here
-
-    // check user balance
-    const { lunch_credit_balance: userBalance } = await prisma.withdrawal.findUnique({
-      where: {
-        id: user_id,
-      },
-      select: {
-        lunch_credit_balance: true
-      }
+    
+    const user = req.user;
+    // check organization balance
+    const { balance: organizationBalance } = await prisma.OrganizationLunchWallet.findUnique({
+      where: { id: user.org_id, },
+      select: { balance: true, }
     })
-
-    const newBalance = userBalance - amount;
-    if(newBalance < 0) {
+    if(organizationBalance < amount) {
       this.error(res, 
         "--insufficient funds", 
         400,
         {
-          error: "you don't have enough funds to make this request"
+          error: "sorry, the organization cannot grant this request at this time"
         }
       ) 
       return;
     }
 
-    // feat- Handle payment service here if implemented
+  
+    //calculating totalAvailable credits
+    let totalAvailableCredits = 0;
+    for (const lunch of user.receiver_lunch) {
+      if (!lunch.redeemed) {
+        const lunchPrice = 1000; // The lunch price per quantity
 
-    // create a withdrawal request in withdrawals table
-    const createWithdrawal = prisma.withdrawal.create({
-      data: { 
-        user_id,
-        status: "success",
-        amount,
-        created_at: new Date().toISOString(),
-      }
-    });
+        // Check if the withdrawal amount can be covered by this lunch credit
+        if (amount <= lunch.quantity * lunchPrice) {
+          // Calculate the new quantity for this lunch credit
+          const remainingQuantity = Math.max(
+            0,
+            lunch.quantity - Math.ceil(amount / lunchPrice)
+          );
 
-    //update lunch_credit_balance of user
-    const updateLunchCreditBalance = prisma.withdrawal.update({
-      data: {
-        lunch_credit_balance: newBalance,
-      },
-      where: {
-        id: user_id,
+          // Update the lunch credit with the new quantity
+          await prisma.lunch.update({
+            where: { id: lunch.id },
+            data: { quantity: remainingQuantity, redeemed: true },
+          });
+
+          // Update the total available credits
+          totalAvailableCredits += remainingQuantity;
+          amount -= remainingQuantity * lunchPrice;
+        } else {
+          // This lunch credit doesn't cover the full withdrawal amount
+          // No need to mark it as redeemed or update its quantity
+        }
       }
-    });
-    
-    //transaction- create withdrawal and update user lunch_credit_balance
-    await prisma.$transaction([createWithdrawal, updateLunchCreditBalance])
+    }
+
+
+    // Check if the withdrawal amount is valid
+    if (amount <= totalAvailableCredits * lunchPrice) {
+      // Perform the withdrawal and update the user's lunch credit balance
+      const lunchCreditBalance = user.lunch_credit_balance || '0';
+      const newBalance = parseInt(lunchCreditBalance) - amount;
+      const updateUserLunchCreditBalance =  prisma.user.update({
+        where: { id: user.id },
+        data: { lunch_credit_balance: newBalance.toString() },
+      });
+
+      const organization = await prisma.organization.findUnique({
+        where: { id: user.org_id },
+      });
+      
+      // Update the organization's lunch wallet balance
+      const newOrganizationBalance = organization.lunch_wallet_balance - amount;
+      const updateOrganizationLunchWalletBalance = prisma.OrganizationLunchWallet.update({
+        where: { id: user.org_id },
+        data: { balance: newOrganizationBalance },
+      });
+
+      // create a withdrawal request in withdrawals table
+      const createWithdrawal = prisma.withdrawal.create({
+        data: { 
+          user_id: user.id,
+          status: "success",
+          amount,
+          created_at: new Date().toISOString(),
+        }
+      });
+      // successful
+      //transaction- update user lunch_credit_balance, update_organization_wallet_balance, create withdrawal
+      await prisma.$transaction([updateUserLunchCreditBalance, updateOrganizationLunchWalletBalance, createWithdrawal]);
+
+    } else {
+    // 'Insufficient lunch credits for withdrawal.'
+      this.error(res, 
+        "--insufficient funds", 
+        400,
+        {
+          error: "sorry, the organization cannot grant this request at this time"
+        }
+      ) 
+      return;
+    }
 
     //response
     const response = {
