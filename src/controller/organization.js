@@ -21,7 +21,7 @@ class OrganizationController extends BaseController {
       data: {
         id,
         email,
-        org_id: "req.user.org_id3",
+        org_id: req.user.org_id,
         password_hash: hashedPassword,
         refresh_token: otp_token,
         first_name,
