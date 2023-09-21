@@ -12,24 +12,24 @@ class UserRoute {
     this.initializeRoutes();
   }
 
-  initializeRoutes() {
-    // route for getting user profile information
+	initializeRoutes() {
+		//Route to get user profile
+		this.router.get(
+			`${this.path}/profile`,
+			isAuthenticated,
+			useCatchErrors(
+				this.userController.getUserProfile.bind(this.userController)
+			)
+		);
 
-    this.router.get(
-      `${this.path}/profile`,
-      isAuthenticated,
-      useCatchErrors(
-        this.userController.getUserProfile.bind(this.userController)
-      )
-    );
-
-    // Route to get all users
-    this.router.get(
-      `${this.path}/users`,
-      isAuthenticated,
-      useCatchErrors(this.userController.allUsers.bind(this.userController))
-    );
-  }
+		// Route to get all users
+		this.router.get(
+			`${this.path}/users`,
+			useCatchErrors(
+				this.userController.allUsers.bind(this.userController)
+			)
+		);
+	}
 }
 
 module.exports = UserRoute;
