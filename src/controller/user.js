@@ -7,8 +7,10 @@ class UserController extends BaseController {
     super();
   }
 
+
 	async getUserProfile(req, res) {
 		const user_id = req.user?.user_id;
+
 
     const user = await prisma.user.findUnique({
       where: { id: user_id },
@@ -36,7 +38,7 @@ class UserController extends BaseController {
 		}
 	}
 
-	
+
   // retrieve all users within the organization
   async allUsers(req, res) {
     // authenticate request

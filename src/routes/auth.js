@@ -4,7 +4,8 @@ const useCatchErrors = require("../error/catchErrors");
 class AuthRoute {
   router = express.Router();
   authController = new AuthController();
-  path = "/auth";
+
+  path = '/auth';
 
   constructor() {
     this.initializeRoutes();
