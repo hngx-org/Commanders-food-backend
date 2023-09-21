@@ -3,6 +3,7 @@ const OrganizationController = require("../controller/organization");
 const useCatchErrors = require("../error/catchErrors");
 const { verifyOTP, isAdmin, isAuthenticated } = require("../middlewares/auth");
 
+
 class OrganizationRoute {
   router = express.Router();
   organizationController = new OrganizationController();
@@ -14,6 +15,13 @@ class OrganizationRoute {
 
   initializeRoutes() {
     this.router.post(
+      `${this.path}/invite`,
+      isAuthenticated,
+      isAdmin,
+      useCatchErrors(this.organizationController.createOrganizationInvite.bind(
+        this.organizationController
+      ))
+    )
       `${this.path}/staff/signup`,
       verifyOTP,
       useCatchErrors(

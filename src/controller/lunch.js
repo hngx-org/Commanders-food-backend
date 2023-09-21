@@ -1,11 +1,12 @@
-const BaseController = require("./base");
-const prisma = require("../config/prisma");
+const BaseController = require('./base');
+const prisma = require('../config/prisma');
+const shortId = require('short-uuid');
 
 const checkIfUserExists = async (userId, prisma) => {
   const user = await prisma.user.findUnique({
     where: {
-      id: userId,
-    },
+      id: userId
+    }
   });
 
   if (user === null) {
@@ -25,9 +26,9 @@ class LunchController extends BaseController {
 
     if (!lunch) {
       const errorData = {
-        message: `Lunch with id ${lunchId} does not exist`,
+        message: `Lunch with id ${lunchId} does not exist`
       };
-      this.error(res, "Lunch Not Found", 404, errorData);
+      this.error(res, 'Lunch Not Found', 404, errorData);
     } else {
       const lunchData = {
         receiverId: lunch.receiverId,
@@ -35,29 +36,31 @@ class LunchController extends BaseController {
         quantity: lunch.quantity,
         redeemed: lunch.redeemed,
         note: lunch.note,
-        created_at: "",
-        id: "",
+        created_at: '',
+        id: ''
       };
 
-      this.success(res, "Lunch request created successfully", 200, lunchData);
+      this.success(res, 'Lunch request created successfully', 200, lunchData);
     }
   }
 
   async getAllLunch(req, res) {
-    const allLunchdata = await prisma.Lunch.findMany({
+    const lunches = await prisma.lunch.findMany({
       where: {
-        receiverId: req.user.user_id, //test value waiting for id from auth
-      },
+        receiverId: req.user.user_id //test value waiting for id from auth
+      }
     });
 
-    if (allLunchdata.length == 0) {
+    if (lunches.length == 0) {
       return this.success(
         res,
-        "There are currently no Lunch data",
+        'There are currently no Lunch data',
         200,
-        allLunchdata
+        lunches
       );
     }
+
+    this.success(res, 'Lunch data fetched successfully', 200, lunches);
   }
 
   async sendLunch(req, res) {
@@ -66,11 +69,11 @@ class LunchController extends BaseController {
     const receiversExistsArray = [];
 
     if (!receivers || receivers.length === 0) {
-      return this.error(res, "Please add at least receiver", 422);
+      return this.error(res, 'Please add at least receiver', 422);
     }
     //prevent user from sending lunch to him/her self
     if (receivers.includes(req.user.user_id)) {
-      return this.error(res, "You cannot send to yourself", 422);
+      return this.error(res, 'You cannot send to yourself', 422);
     }
 
     if (receivers.length > 0) {
@@ -82,32 +85,32 @@ class LunchController extends BaseController {
       console.log(receiversExistsArray);
 
       if (receiversExistsArray.includes(false)) {
-        return this.error(res, "At least one receiver does not exist", 422);
+        return this.error(res, 'At least one receiver does not exist', 422);
       }
     }
 
     if (quantity < 1) {
-      return this.error(res, "Invalid quantity", 422);
+      return this.error(res, 'Invalid quantity', 422);
     }
 
     const responseData = [];
 
     const orgLunchWallet = await prisma.organizationLunchWallet.findUnique({
       where: {
-        org_id: req.user.org_id,
-      },
+        org_id: req.user.org_id
+      }
     });
 
     const org = await prisma.organization.findUnique({
       where: {
-        id: orgLunchWallet.org_id,
-      },
+        id: orgLunchWallet.org_id
+      }
     });
 
     const sender = await prisma.user.findUnique({
       where: {
-        id: req.user.user_id,
-      },
+        id: req.user.user_id
+      }
     });
 
     const amountToDeduct =
@@ -121,22 +124,22 @@ class LunchController extends BaseController {
 
     const modifiedOrgWallet = await prisma.organizationLunchWallet.update({
       where: {
-        org_id: orgLunchWallet.org_id,
+        org_id: orgLunchWallet.org_id
       },
       data: {
-        balance: String(Number(orgLunchWallet.balance) - amountToDeduct),
-      },
+        balance: String(Number(orgLunchWallet.balance) - amountToDeduct)
+      }
     });
 
     if (!modifiedOrgWallet) {
-      return this.error(res, "The transaction was unsuccessful", 403);
+      return this.error(res, 'The transaction was unsuccessful', 403);
     }
 
     for (let successfulReceiver of receivers) {
       const succReceiver = await prisma.user.findUnique({
         where: {
-          id: successfulReceiver,
-        },
+          id: successfulReceiver
+        }
       });
 
       const receiverPreviousBalance = Number(succReceiver.lunch_credit_balance);
@@ -144,16 +147,16 @@ class LunchController extends BaseController {
         receiverPreviousBalance + quantity * Number(org.lunch_price);
       const receiver = await prisma.user.update({
         where: {
-          id: successfulReceiver,
+          id: successfulReceiver
         },
 
         data: {
-          lunch_credit_balance: String(newReceiverBalance),
-        },
+          lunch_credit_balance: String(newReceiverBalance)
+        }
       });
 
       if (!receiver) {
-        return this.error(res, "The transaction was unsuccessful", 403);
+        return this.error(res, 'The transaction was unsuccessful', 403);
       }
 
       //add the lunch to the the lunch table
@@ -164,22 +167,29 @@ class LunchController extends BaseController {
           quantity: quantity,
           redeemed: false,
           note: note,
-          org_id: req.user.org_id,
-        },
+          org_id: req.user.org_id
+        }
       });
 
       if (!newLunch) {
-        return this.error(res, "The transaction was unsuccessful", 403);
+        return this.error(res, 'The transaction was unsuccessful', 403);
       }
 
       const data = {
         sender: sender.id,
         receiver: { id: receiver.id, email: receiver.email },
-        quantity: quantity,
+        quantity: quantity
       };
 
       responseData.push(data);
     }
+
+    return this.success(
+      res,
+      'Lunch transfer was successful',
+      200,
+      responseData
+    );
   }
 }
 
