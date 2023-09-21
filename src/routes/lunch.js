@@ -21,7 +21,7 @@ class LunchRoute {
         this.lunchController.getAllLunch.bind(this.lunchController)
       )
     );
-    this.router.get(
+    this.router.post(
       `${this.path}/send`,
       isAuthenticated,
       useCatchErrors(this.lunchController.getLunch.bind(this.lunchController))

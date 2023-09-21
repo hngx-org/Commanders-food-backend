@@ -8,75 +8,83 @@ class UserController extends BaseController {
   }
 
   async getUserProfile(req, res) {
-    const { user_id } = req.user;
+    const user_id = req.user?.user_id;
 
     const user = await prisma.user.findUnique({
       where: { id: user_id },
     });
 
-    if (!user) {
+    if (!user_id) {
+      const errorData = {
+        message: `User with id ${user_id} does not exist`,
+      };
+      this.error(res, "User Not Found", 404, errorData);
+    } else if (!user) {
       const errorData = {
         message: `User with id ${user_id} does not exist`,
       };
       this.error(res, "User Not Found", 404, errorData);
     } else {
       const userProfile = {
-        data: {
-          name: `${user.first_name} ${user.last_name}`,
-          email: user.email,
-          phonenumber: user.phonenumber,
-          profile_picture: user.profile_picture,
-          lunch_credit_balance: user.lunch_credit_balance,
-        },
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        phonenumber: user.phonenumber,
+        profile_picture: user.profile_picture,
+        lunch_credit_balance: user.lunch_credit_balance,
       };
-      this.success(res, "User data fetched successfully", 200, userProfile);
+      this.success(
+        res,
+        "User data fetched successfully",
+        200,
+        userProfile
+      );
     }
   }
-  
+
   async createBankDetailsForUser(req, res) {
     // Assuming the user's bank details are sent in the request body
     const { userId } = req.params; // Assuming the user ID is in the route parameters
     const bankDetails = req.body;
-  
+
     // Check if the user with the specified ID exists
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
     });
-  
+
     if (!existingUser) {
       return this.error(res, `User with ID ${userId} does not exist`, 404);
     }
-  
-      // Create or update the user's bank details
-      const updatedUser = await prisma.user.update({
-        where: { id: userId },
-        data: {
-          bank_number: bankDetails.bank_number,
-          bank_code: bankDetails.bank_code,
-          bank_name: bankDetails.bank_name,
-          bank_region: bankDetails.bank_region,
-          currency_code: bankDetails.currency_code,
-        },
-      });
-  
-      this.success(res, "User bank details updated successfully", 200, updatedUser);
+
+    // Create or update the user's bank details
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        bank_number: bankDetails.bank_number,
+        bank_code: bankDetails.bank_code,
+        bank_name: bankDetails.bank_name,
+        bank_region: bankDetails.bank_region,
+        currency_code: bankDetails.currency_code,
+      },
+    });
+
+    this.success(res, "User bank details updated successfully", 200, updatedUser);
   }
-  
+
   async updateUserBankDetails(req, res) {
     // Assuming you have a route parameter for user ID
     const userId = req.params.id;
     // Assuming the updated bank details are sent in the request body
     const updatedBankDetails = req.body;
-  
+
     // Check if the user with the specified ID exists
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
     });
-  
+
     if (!existingUser) {
       return this.error(res, "User not found", 404);
     }
-  
+
     // Update the user's bank details
     const updatedUser = await prisma.user.update({
       where: { id: userId },
@@ -89,9 +97,9 @@ class UserController extends BaseController {
         currency_code: updatedBankDetails.currency_code,
       },
     });
-  
+
     this.success(res, "User bank details updated successfully", 200, updatedUser);
-  } 
+  }
 
   // Retrieve all users within the organization
   async allUsers(req, res) {
@@ -117,7 +125,6 @@ class UserController extends BaseController {
         email: user.email,
         profile_picture: user.profile_picture,
         user_id: user.id,
-        organization: user.organization,
       })),
     };
     // Send the response to the client

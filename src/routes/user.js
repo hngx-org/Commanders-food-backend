@@ -13,11 +13,11 @@ class UserRoute {
   }
 
   initializeRoutes() {
-    // route for getting user profile information
+    // route for getting user profile 
     this.router.get(
       `${this.path}/profile`,
       isAuthenticated,
-      useCatchErrors(this.userController.createBankDetailsForUser.bind(this.userController))
+      useCatchErrors(this.userController.getUserProfile.bind(this.userController))
     );
 
     // Create user bank account details
@@ -40,7 +40,7 @@ class UserRoute {
 
     // Route to get all users
     this.router.get(
-      `${this.path}/all`,
+      `${this.path}/allUsers`,
       isAuthenticated,
       useCatchErrors(this.userController.allUsers.bind(this.userController))
     );
