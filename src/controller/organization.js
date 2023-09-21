@@ -21,11 +21,12 @@ class OrganizationController extends BaseController {
       data: {
         id,
         email,
-        org_id: req.user.org_id,
+        org_id: "req.user.org_id3",
         password_hash: hashedPassword,
         refresh_token: otp_token,
         first_name,
         last_name,
+        profile_picture: `https://api.dicebear.com/7.x/micah/svg?seed=${first_name}`,
         phonenumber: phone_number,
         updated_at: formattedDate,
         created_at: formattedDate,
