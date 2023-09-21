@@ -23,6 +23,6 @@ class AuthRoute {
     );
   }
   };
-  }
+  
 
 module.exports = AuthRoute;

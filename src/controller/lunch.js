@@ -1,4 +1,4 @@
-const { Prisma } = require("@prisma/client");
+//code refactor
 const BaseController = require("./base");
 const prisma = require("../config/prisma")
 

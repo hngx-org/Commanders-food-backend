@@ -1,5 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+//code refactor
+const prisma = require('./../config/prisma');
 const BaseController = require("./base");
 
 class UserController extends BaseController {
