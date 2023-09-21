@@ -22,8 +22,16 @@ const LoginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const WithdrawalRequestSchema = Joi.object({
+  bank_name: Joi.string().required() , 
+  bank_number: Joi.number().required(), 
+  bank_code: Joi.number().required(), 
+  amount: Joi.number().required(),
+});
+
 module.exports = {
   UserSignupSchema,
   LoginSchema,
-  StaffSignupSchema,
+  WithdrawalRequestSchema,
+  StaffSignupSchema
 };

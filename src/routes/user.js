@@ -13,7 +13,7 @@ class UserRoute {
   }
 
   initializeRoutes() {
-    // route for getting user profile 
+    //Route to get user profile
     this.router.get(
       `${this.path}/profile`,
       isAuthenticated,
@@ -23,9 +23,10 @@ class UserRoute {
     // Create user bank account details
     this.router.post(
       `${this.path}/bank-details`,
-      useCatchErrors(this.userController.getUserProfile.bind(this.userController))
+      isAuthenticated,
+      useCatchErrors(this.userController.createBankDetailsForUser.bind(this.userController))
     );
-
+    
     // Route to update user's bank details (PUT)
     this.router.put(
       `${this.path}/update-bank-details/:id`,
@@ -43,6 +44,15 @@ class UserRoute {
       `${this.path}/allUsers`,
       isAuthenticated,
       useCatchErrors(this.userController.allUsers.bind(this.userController))
+    );
+
+    // Route to search a user by Name or Email
+    this.router.get(
+      `${this.path}/search/:query`,
+      isAuthenticated,
+      useCatchErrors(
+        this.userController.searchUserByNameOrEmail.bind(this.userController)
+      )
     );
   }
 }
