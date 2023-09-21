@@ -1,3 +1,8 @@
+const express = require("express");
+const UserController = require("../controller/user");
+const useCatchErrors = require("../error/catchErrors");
+const { isAuthenticated } = require("../middlewares/auth");
+
 class UserRoute {
   router = express.Router();
   userController = new UserController();
@@ -8,16 +13,21 @@ class UserRoute {
   }
 
   initializeRoutes() {
-    
+    // route for getting user profile information
+
     this.router.get(
-      `${this.path}/data`, 
-      useCatchErrors(this.userController.getUser.bind(this.userController))
+      `${this.path}/profile`,
+      isAuthenticated,
+      useCatchErrors(
+        this.userController.getUserProfile.bind(this.userController)
+      )
     );
 
-    // Endpoint to get all users
+    // Endpoint Route to get all users
     this.router.get(
-      `${this.path}/users`,
-      useCatchErrors(this.userController.getAllUsers.bind(this.userController))
+      `${this.path}/all`,
+      isAuthenticated,
+      useCatchErrors(this.userController.allUsers.bind(this.userController))
     );
   }
 }

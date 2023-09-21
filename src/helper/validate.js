@@ -8,6 +8,12 @@ const UserSignupSchema = Joi.object({
   phonenumber: Joi.string().required(),
 });
 
+const LoginSchema = Joi.object({
+  email: Joi.string().required(),
+  password: Joi.string().min(6).required(),
+});
+
 module.exports = {
   UserSignupSchema,
+  LoginSchema,
 };
