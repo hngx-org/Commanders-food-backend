@@ -25,7 +25,7 @@ class UserRoute {
 
     // Route to get all users
     this.router.get(
-      `${this.path}/all`,
+      `${this.path}/users`,
       isAuthenticated,
       useCatchErrors(this.userController.allUsers.bind(this.userController))
     );
