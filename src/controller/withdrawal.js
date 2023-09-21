@@ -37,16 +37,21 @@ class WithdrawalController extends BaseController {
   
     //calculating totalAvailable credits
     let totalAvailableCredits = 0;
+    // The lunch price per quantity
+    const { lunch_price } = await prisma.organization.findUnique({
+      where: { id: user.org_id },
+      select: { lunch_price: true }
+    }); 
+
     for (const lunch of user.receiver_lunch) {
       if (!lunch.redeemed) {
-        const lunchPrice = 1000; // The lunch price per quantity
 
         // Check if the withdrawal amount can be covered by this lunch credit
-        if (amount <= lunch.quantity * lunchPrice) {
+        if (amount <= lunch.quantity * lunch_price) {
           // Calculate the new quantity for this lunch credit
           const remainingQuantity = Math.max(
             0,
-            lunch.quantity - Math.ceil(amount / lunchPrice)
+            lunch.quantity - Math.ceil(amount / lunch_price)
           );
 
           // Update the lunch credit with the new quantity
@@ -57,7 +62,7 @@ class WithdrawalController extends BaseController {
 
           // Update the total available credits
           totalAvailableCredits += remainingQuantity;
-          amount -= remainingQuantity * lunchPrice;
+          amount -= remainingQuantity * lunch_price;
         } else {
           // This lunch credit doesn't cover the full withdrawal amount
           // No need to mark it as redeemed or update its quantity
@@ -67,7 +72,7 @@ class WithdrawalController extends BaseController {
 
 
     // Check if the withdrawal amount is valid
-    if (amount <= totalAvailableCredits * lunchPrice) {
+    if (amount <= totalAvailableCredits * lunch_price) {
       // Perform the withdrawal and update the user's lunch credit balance
       const lunchCreditBalance = user.lunch_credit_balance || '0';
       const newBalance = parseInt(lunchCreditBalance) - amount;
