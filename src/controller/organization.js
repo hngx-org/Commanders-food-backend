@@ -23,7 +23,7 @@ class OrganizationController extends BaseController {
         email,
         org_id: req.user.org_id,
         password_hash: hashedPassword,
-        refresh_token: otp_token,
+        refresh_token: "",
         first_name,
         last_name,
         profile_picture: `https://api.dicebear.com/7.x/micah/svg?seed=${first_name}`,

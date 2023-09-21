@@ -1,6 +1,7 @@
 const express = require("express");
 const OrganizationController = require("../controller/organization");
 const useCatchErrors = require("../error/catchErrors");
+const { verifyOTP } = require("../middlewares/auth");
 
 class OrganizationRoute {
   router = express.Router();
@@ -14,6 +15,7 @@ class OrganizationRoute {
   initializeRoutes() {
     this.router.post(
       `${this.path}/staff/signup`,
+      verifyOTP,
       useCatchErrors(
         this.organizationController.staffSignUp.bind(
           this.organizationController
