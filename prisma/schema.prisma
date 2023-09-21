@@ -56,7 +56,7 @@ model Organization {
     id          String  @id @unique @map(name: "id")
     name        String?
     email       String?
-    lunch_price String? @map(name: "lunch_price")
+    lunch_price String? @default("1000") @map(name: "lunch_price")
     currency    String?
 
     organization_invites OrganizationInvite[]
