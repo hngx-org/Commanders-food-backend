@@ -45,7 +45,7 @@ CREATE TABLE `organization` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NULL,
     `email` VARCHAR(191) NULL,
-    `lunch_price` VARCHAR(191) NULL,
+    `lunch_price` VARCHAR(191) NULL DEFAULT '1000',
     `currency` VARCHAR(191) NULL,
 
     UNIQUE INDEX `organization_id_key`(`id`),

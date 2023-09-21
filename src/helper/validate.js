@@ -29,9 +29,17 @@ const WithdrawalRequestSchema = Joi.object({
   amount: Joi.number().required(),
 });
 
+const saveBankInfoShema = Joi.object({
+  bank_name: Joi.string().required(),
+  bank_number: Joi.string().required(),
+  bank_code: Joi.string().required(),
+  bank_region: Joi.string().required(),
+});
+
 module.exports = {
   UserSignupSchema,
   LoginSchema,
   WithdrawalRequestSchema,
-  StaffSignupSchema
+  StaffSignupSchema,
+  saveBankInfoShema,
 };

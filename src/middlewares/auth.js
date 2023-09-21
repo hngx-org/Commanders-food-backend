@@ -93,7 +93,6 @@ async function verifyOTP(req, res, next) {
 module.exports = {
   isAuthenticated,
   isAdmin,
-
   verifyOTP,
 
 };
