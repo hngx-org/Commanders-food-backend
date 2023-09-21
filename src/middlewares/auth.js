@@ -70,6 +70,11 @@ async function verifyOTP(req, res, next) {
       return res.status(404).json({ message: "Invalid OTP code." });
     }
 
+    // delete token from db
+    await prisma.organizationInvite.delete({
+      where: { id: otpExists?.organization?.id },
+    });
+
     req.user = { org_id: otpExists?.organization.id };
     next();
   } catch (e) {

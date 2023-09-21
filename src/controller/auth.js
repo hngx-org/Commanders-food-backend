@@ -16,7 +16,7 @@ class AuthController extends BaseController {
       return this.error(res, error.message, 400);
     }
 
-    const { email, password, first_name, last_name, phonenumber } = payload;
+    const { email, password, first_name, last_name, phone_number } = payload;
 
     // check if user exists of not
     const userExists = await prisma.user.findMany({ where: { email } });
@@ -47,7 +47,7 @@ class AuthController extends BaseController {
         first_name,
         last_name,
         profile_picture: profilePic,
-        phonenumber,
+        phonenumber: phone_number,
         password_hash: pwdHash,
         refresh_token: refreshToken,
         isAdmin: true,
