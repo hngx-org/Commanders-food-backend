@@ -108,6 +108,12 @@ class AuthController extends BaseController {
       org_id,
     });
 
+    // update user ref_token
+    await prisma.user.update({
+      where: { id: id },
+      data: { refresh_token: refreshToken },
+    });
+
     // update refresh token
     await prisma.user.update({
       where: { id },
