@@ -7,31 +7,30 @@ const prisma = new PrismaClient();
 const jwtSecret = process.env.JWT_SECRET;
 
 async function isAuthenticated(req, res, next) {
-  const token = req.headers.authorization?.split(' ')[1];
+  const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: "Unauthorized" });
   }
   try {
     const decodedToken = jwt.verify(token, jwtSecret);
     const { user_id } = decodedToken;
     const user = await prisma.user.findUnique({
-      where: { id: user_id }
+      where: { id: user_id },
     });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "Unauthorised" });
     }
     req.user = {
       user_id: user.id,
-      org_id: user.org_id
+      org_id: user.org_id,
     };
     next();
   } catch (err) {
-    return res.status(403).json({ message: 'Forbidden' });
+    return res.status(403).json({ message: "Forbidden" });
   }
 }
 
 async function isAdmin(req, res, next) {
-
   const errormessage = "Not enough permissions to perform this action";
 
   const user_id = req.user?.user_id; // req.user will be already set by isAuthenticated middleware
@@ -40,9 +39,7 @@ async function isAdmin(req, res, next) {
   }
   try {
     const { isAdmin } = await prisma.user.findFirstOrThrow({
-
       where: { id: user_id },
-
     });
     if (!isAdmin) {
       return res.status(403).json({ message: errormessage });
@@ -55,7 +52,6 @@ async function isAdmin(req, res, next) {
 }
 
 async function verifyOTP(req, res, next) {
-
   const payload = req.body;
   if (typeof payload?.otp_token === "undefined") {
     return res
@@ -87,7 +83,6 @@ async function verifyOTP(req, res, next) {
     logger.error(`Invalid OTP code: ${e.message}`);
     res.status(500).json({ message: "Something went wrong verifying OTP" });
   }
-
 }
 
 module.exports = {
@@ -95,5 +90,4 @@ module.exports = {
   isAdmin,
 
   verifyOTP,
-
 };
