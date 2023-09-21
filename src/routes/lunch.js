@@ -25,24 +25,6 @@ class LunchRoute {
       isAuthenticated,
       useCatchErrors(this.lunchController.sendLunch.bind(this.lunchController))
     );
-
-    // redeem user lunch by id
-    this.router.put(
-      `${this.path}/redeem/:id`,
-      isAuthenticated,
-      useCatchErrors(
-        this.lunchController.redeemLunchById.bind(this.lunchController)
-      )
-    );
-
-    // redeem all user lunches
-    this.router.put(
-      `${this.path}/redeem`,
-      isAuthenticated,
-      useCatchErrors(
-        this.lunchController.redeemAllUserLunches.bind(this.lunchController)
-      )
-    );
   }
 }
 
