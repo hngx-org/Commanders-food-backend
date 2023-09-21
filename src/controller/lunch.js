@@ -70,7 +70,7 @@ class LunchController extends BaseController {
     }
     //prevent user from sending lunch to him/her self
     if (receivers.includes(req.user.user_id)) {
-      return this.error(res, "You cannot be a receiver", 422);
+      return this.error(res, "You cannot send to yourself", 422);
     }
 
     if (receivers.length > 0) {
@@ -82,11 +82,7 @@ class LunchController extends BaseController {
       console.log(receiversExistsArray);
 
       if (receiversExistsArray.includes(false)) {
-        return this.error(
-          res,
-          "At least one potential receiver does not exist ",
-          422
-        );
+        return this.error(res, "At least one receiver does not exist", 422);
       }
     }
 
@@ -102,25 +98,24 @@ class LunchController extends BaseController {
       },
     });
 
+    const org = await prisma.organization.findUnique({
+      where: {
+        id: orgLunchWallet.org_id,
+      },
+    });
+
     const sender = await prisma.user.findUnique({
       where: {
         id: req.user.user_id,
       },
     });
 
-    const amountToDeduct = quantity * receivers.length;
-
-    if (amountToDeduct > Number(sender.lunch_credit_balance)) {
-      return this.error(res, "Your lunch balance is not enough", 403);
-    }
+    const amountToDeduct =
+      quantity * receivers.length * Number(org.lunch_price);
 
     if (amountToDeduct > Number(orgLunchWallet.balance)) {
       return this.error(res, "Organization's lunch balance exceeded", 403);
     }
-
-    // const currentLunchBalance = Number(orgLunchWallet.balance);
-    //   const senderLunchBalance = Number(sender.lunch_credit_balance);
-    //   const newLunchBalance = currentLunchBalance - quantity;
 
     //deduct lunch balance from org wallet
 
@@ -137,80 +132,53 @@ class LunchController extends BaseController {
       return this.error(res, "The transaction was unsuccessful", 403);
     }
 
-    //deduct lunch balance from sender lunch balance
-
-    const modifiedSender = await prisma.user.update({
-      where: {
-        id: sender.id,
-      },
-
-      data: {
-        lunch_credit_balance: String(
-          Number(sender.lunch_credit_balance) - amountToDeduct
-        ),
-      },
-    });
-
-    if (!modifiedSender) {
-      return this.error(res, "The transaction was unsuccessful", 403);
-    }
-
     for (let successfulReceiver of receivers) {
-      if (newLunchBalance > 0 && senderLunchBalance > 0) {
-        const succReceiver = await prisma.user.findUnique({
-          where: {
-            id: successfulReceiver,
-          },
-        });
+      const succReceiver = await prisma.user.findUnique({
+        where: {
+          id: successfulReceiver,
+        },
+      });
 
-        const receiverPreviousBalance = Number(
-          succReceiver.lunch_credit_balance
-        );
-        const newReceiverBalance = receiverPreviousBalance + quantity;
-        const receiver = await prisma.user.update({
-          where: {
-            id: successfulReceiver,
-          },
+      const receiverPreviousBalance = Number(succReceiver.lunch_credit_balance);
+      const newReceiverBalance =
+        receiverPreviousBalance + quantity * Number(org.lunch_price);
+      const receiver = await prisma.user.update({
+        where: {
+          id: successfulReceiver,
+        },
 
-          data: {
-            lunch_credit_balance: String(newReceiverBalance),
-          },
-        });
+        data: {
+          lunch_credit_balance: String(newReceiverBalance),
+        },
+      });
 
-        if (!succReceiver) {
-          return this.error(res, "The transaction was unsuccessful", 403);
-        }
-        
-        //add the lunch to the the lunch table
-        const newLunch = await prisma.lunch.create({
-          data: {
-            senderId: sender.id,
-            receiverId: successfulReceiver,
-            quantity: quantity,
-            redeemed: false,
-            note: note,
-            org_id: req.user.org_id,
-          },
-        });
-
-        if (!newLunch) {
-          return this.error(res, "The transaction was unsuccessful", 403);
-        }
-
-        const data = {
-          sender: sender.id,
-          receiver: { id: receiver.id, email: receiver.email },
-          quantity: quantity,
-        };
-
-        responseData.push(data);
-      } else {
-        return this.error(
-          res,
-          "The transaction was rejected over inconsistencies",
-          403
-        );
+      if (!receiver) {
+        return this.error(res, "The transaction was unsuccessful", 403);
       }
+
+      //add the lunch to the the lunch table
+      const newLunch = await prisma.lunch.create({
+        data: {
+          senderId: sender.id,
+          receiverId: successfulReceiver,
+          quantity: quantity,
+          redeemed: false,
+          note: note,
+          org_id: req.user.org_id,
+        },
+      });
+
+      if (!newLunch) {
+        return this.error(res, "The transaction was unsuccessful", 403);
+      }
+
+      const data = {
+        sender: sender.id,
+        receiver: { id: receiver.id, email: receiver.email },
+        quantity: quantity,
+      };
+
+      responseData.push(data);
     }
 
     return this.success(res, "You have access", 200, responseData);
