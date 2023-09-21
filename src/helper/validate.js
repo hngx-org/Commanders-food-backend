@@ -13,7 +13,12 @@ const LoginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+ const organizationInvite = Joi.object({
+  email: Joi.string.required(),
+ });
+
 module.exports = {
   UserSignupSchema,
   LoginSchema,
+  organizationInvite,
 };
