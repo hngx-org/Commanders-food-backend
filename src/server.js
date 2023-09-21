@@ -3,7 +3,7 @@ const UserRoute = require("./routes/user");
 const LunchRoute = require("./routes/lunch"); 
 const OrganizationRoute = require("./routes/organization");
 const AuthRoute = require("./routes/auth");
-const WithdrawalController = require("./routes/withdrawal")
+const WithdrawalRoute = require("./routes/withdrawal")
 
 const server = new App();
 server.initializedRoutes([
@@ -11,6 +11,6 @@ server.initializedRoutes([
   new LunchRoute(),
   new AuthRoute(),
   new OrganizationRoute(),
-  new WithdrawalController(),
+  new WithdrawalRoute(),
 ]);
 server.listen();
