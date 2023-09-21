@@ -6,24 +6,11 @@ const bodyParser = require("body-parser");
 const HandleErrors = require("./middlewares/error.js");
 const logger = require("./config/logger.js");
 const ENV = require("./config/env.js");
-const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const YAML = require('yaml');
+const swaggerFile = require("./documentation/swagger.js")
 
-
-
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Free Lunch API',
-      version: '1.0.0',
-    },
-  },
-  apis: ['*.js'],
-};
-
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-
+const swaggerDocument = YAML.parse(swaggerFile, 'utf8');
 class App {
   constructor() {
     this.app = express();
@@ -47,8 +34,7 @@ class App {
     );
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
-    this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-  }
+    this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));  }
 
   listen() {
     // initialize database
