@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const BaseController = require("./base");
+const { saveBankInfoShema } = require("../helper/validate");
 
 class UserController extends BaseController {
   constructor() {
@@ -159,7 +160,8 @@ class UserController extends BaseController {
       message: `User with id ${user_id} does not exist`,
     };
     if (!user) this.error(res, "User not found", 404, errorData);
-    const updateUserBankDetails = await prisma.user.update({
+
+    await prisma.user.update({
       where: { id: user.id },
       data: {
         bank_name: bank_name,
@@ -168,12 +170,12 @@ class UserController extends BaseController {
         bank_region: bank_region,
       },
     });
-    this.success(
-      res,
-      "successfully created bank account",
-      200,
-      updateUserBankDetails
-    );
+    this.success(res, "successfully saved bank details", 200, {
+      bank_name,
+      bank_code,
+      bank_number,
+      bank_region,
+    });
   }
 }
 

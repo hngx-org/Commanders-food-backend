@@ -43,6 +43,13 @@ const UpdateLunchPriceSchema = Joi.object({
   lunch_price: Joi.number().min(1).required(),
 });
 
+const saveBankInfoShema = Joi.object({
+  bank_name: Joi.string().required(),
+  bank_number: Joi.string().required(),
+  bank_code: Joi.string().required(),
+  bank_region: Joi.string().required(),
+});
+
 module.exports = {
   UserSignupSchema,
   LoginSchema,
@@ -51,4 +58,5 @@ module.exports = {
   StaffSignupSchema,
   SendLunchSchema,
   UpdateLunchPriceSchema,
+  saveBankInfoShema,
 };
