@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "test": "",
-    "start": "node ./src/server.js",
+    "start": "npm run prismaGenerate && node ./src/server.js",
     "dev": "nodemon ./src/server.js",
     "prismaMigrate": "prisma migrate dev",
     "prismaGenerate": "prisma generate dev",
