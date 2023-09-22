@@ -20,7 +20,6 @@ CREATE TABLE `users` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `users_id_key`(`id`),
-    UNIQUE INDEX `users_email_key`(`email`),
     INDEX `users_id_idx`(`id`),
     INDEX `users_org_id_idx`(`org_id`),
     PRIMARY KEY (`id`)
@@ -44,8 +43,7 @@ CREATE TABLE `withdrawals` (
 CREATE TABLE `organization` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NULL,
-    `email` VARCHAR(191) NULL,
-    `lunch_price` VARCHAR(191) NULL DEFAULT '1000',
+    `lunch_price` VARCHAR(191) NULL,
     `currency` VARCHAR(191) NULL,
 
     UNIQUE INDEX `organization_id_key`(`id`),
@@ -59,7 +57,6 @@ CREATE TABLE `organization_invites` (
     `token` VARCHAR(191) NULL,
     `TTL` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `organization_invites_id_key`(`id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -85,7 +82,7 @@ CREATE TABLE `lunches` (
 -- CreateTable
 CREATE TABLE `organization_lunch_wallet` (
     `id` VARCHAR(191) NOT NULL,
-    `balance` VARCHAR(191) NOT NULL,
+    `balance` VARCHAR(191) NOT NULL DEFAULT '0',
     `org_id` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `organization_lunch_wallet_id_key`(`id`),

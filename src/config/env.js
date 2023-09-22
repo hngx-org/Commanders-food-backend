@@ -14,10 +14,10 @@ const ENV = {
     process.env.NODE_ENV === "development"
       ? "http://localhost:8080"
       : `https://freelunch.co`,
-    smtpUsername:process.env.SMTP_USERNAME,
-    smtpPassword:process.env.SMTP_PASSWORD,
-    smtpHost:process.env.SMTP_HOST,
-    smtpPort:process.env.SMTP_PORT,
+  smtpUsername: process.env.SMTP_USER,
+  smtpPassword: process.env.SMTP_PASSWORD,
+  smtpHost: process.env.SMTP_HOST,
+  smtpPort: process.env.SMTP_PORT,
 };
 
 module.exports = ENV;
