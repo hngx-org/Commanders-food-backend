@@ -5,27 +5,13 @@ info:
   description: Documentation for My Node.js API
   version: 1.0.0
 
-  components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
 paths:
   /api/auth/user/signup:
     post:
-      description: Endpoint for user registration.
-      security:
-      - bearerAuth: []
-      responses:
-        '200':    # status code
-          description: successfully
-        '400':
-          description: Bad request (e.g., validation error)
-        '500':
-          description: Internal server error
-        requestBody:
+      summary: Creates a user.
+      
+      description: Endpoint for user signup. 
+      requestBody:
           required: true
           content:
             application/json:
@@ -34,27 +20,39 @@ paths:
                 properties:
                   email:
                     type: string
+                    example: aduak@yahoo.com
                   password:
                     type: string
+                    example: aduak124
                   first_name:
                     type: string
+                    example: aduak
                   last_name:
                     type: string
+                    example: aduakwuna
                   phone_number:
                     type: string
-  /api/auth/login:
-    post:
-      description: Endpoint for user login.
-      security:
-      - bearerAuth: []
+                    example: 0916255625265
       responses:
         '201':    # status code
-          description: successfully logged in
+          description: successful
         '400':
           description: Bad request (e.g., validation error)
         '500':
           description: Internal server error
-        requestBody:
+        
+           
+       
+
+
+ 
+           
+  /api/auth/login:
+    post:
+      summary: Logs in a user.
+      
+      description: Endpoint for user login. 
+      requestBody:
           required: true
           content:
             application/json:
@@ -63,38 +61,132 @@ paths:
                 properties:
                   email:
                     type: string
+                    example: aduak@yahoo.com
                   password:
                     type: string
-  /api/user/profile:
-    get:
-      description: Fetch user Profile by Id.
-      security:
-      - bearerAuth: []
+                    example: aduak124
       responses:
-        '200':    #status code
-          description: User data fetched successfully
+        '201':    # status code
+          description: successful
         '400':
           description: Bad request (e.g., validation error)
         '500':
           description: Internal server error
-        requestBody:
+        
+  /api/user/profile:
+    get:
+      summary: Fetches a user profile.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+      description: Endpoint to fetch a user profile. 
+      requestBody:
           required: true
           content:
-           application/json:
-             schema:
-               type: object
-               properties:
-                 user_id:
-                   type: string
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                    example: user_id
+      responses:
+        '200':    # status code
+          description: successful
+        '400':
+          description: Bad request (e.g., validation error)
+        '500':
+          description: Internal server error
+        
+  
+  /api/user/all:
+    get:
+      summary: Fetches all users.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+      description: Endpoint for user signup. 
+      requestBody:
+          required: false
+      responses:
+        '200':    # status code
+          description: successful
+        '400':
+          description: Bad request (e.g., validation error)
+        '500':
+          description: Internal server error
+        
+  /api/user/search/<nameoremail>:
+    get:
+      summary: Search a user by name or email.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+      description: Endpoint for user signup. 
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: aduak@yahoo.com
+      responses:
+        '200':    # status code
+          description: User fetched
+        '400':
+          description: Bad request (e.g., validation error)
+        '500':
+          description: Internal server error
+        
+  /api/user/redeem:
+    post:
+      summary: Redeems a user lunch.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+      description: Allows a user to add launch credit to launch credit balance. A token must be redeemed before it can be withdrawn 
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                    example: user_id
+      responses:
+        '200':    # status code
+          description: success
+        '400':
+          description: Bad request (e.g., validation error)
+        '500':
+          description: Internal server error
+        
   /api/lunch/send:
     post:
       description: Create a new lunch request.
-      security:
-      - bearerAuth: []
-      responses:
-        '201':
-         description: Lunch request created successfully.
-        requestBody:
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+          schema:
+            type: string
+            format: token
+      
+      requestBody:
           required: true
           content:
            application/json:
@@ -103,145 +195,79 @@ paths:
              properties:
               receivers:
                 type: string
+                example: user_id
               quantities:
                 type: number
+                example: 5
               note:
                 type: string
+                example: Special instructions for the lunch
+      responses:
+        '201':
+         description: Lunch request created successfuly.
+        
+        
   /api/lunch/all:
     get:
       description: Get all Lunches.
-      security:
-      - bearerAuth: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+          schema:
+            type: string
+            format: token
+      
+      
       responses:
         '201':
-         description: Lunch data fetched successfully
+         description: Lunch data fetched successfuly
+        
   /api/lunch/:user_id:
     get:
      description: Gets a specific lunch.
-     security:
-      - bearerAuth: []
+     parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+          schema:
+            type: string
+            format: token
+     
      responses:
       '201':
-       description: Lunch request created successfully
-  /api/user/all:
-    get:
-      description: Fetches all users.
-      security:
-      - bearerAuth: []
-      responses:
-         '200':
-          description: All Users
-  /api/user/search/<nameoremail>:
-    get:
-      description: Get a user by query params
-      security:
-      - bearerAuth: []
-      responses:
-        '200': #status code
-          descriptions: User Found
-  /api/user/redeem:
-    post:
-      description: Allows a user to add launch credit to launch credit balance. A token must be redeemed before it can be withdrawn
-      security:
-      - bearerAuth: []
-      responses:
-        '200': #status code
-           description: Successful
-        requestBody:
-           required: true
-           content:
-             application/json:
-               schema:
-                 type: object
-                 properties:
-                   user_id:
-                     type:string
-
-
-
+       description: Lunch request created successfuly
       
+  
     
       
   /api/organization/create:
     put:
-      description: Allows an admin user to send an invitation to join the organization.
-      responses:
-        '200':    #status code
-          description: Success
-        '400':
-          description: bad request
-        '401':
-          description: Unauthorised (e.g., Bad Token)
-        '500':
-          description: Internal server error
-        Authorization:
-          description:   Bearer access_token
-        requestBody:
+      description: Allows an admin user to create and update the organization name and lunch price 
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+          schema:
+            type: string
+            format: token
+      
+      requestBody:
           required: true
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  email:
+                  organization_name:
                     type: string
-  /api/organization/invite:
-    post:
-      description: Allows an admin user to send an invitation to join the organization.
-      responses:
-        '200':    #status code
-          description: Success
-        '400':
-          description: bad request
-        '401':
-          description: Unauthorised (e.g., Bad Token)
-        '500':
-          description: Internal server error
-        Authorization:
-          description:   Bearer access_token
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  email:
+                    example: myorg
+                  lunch_price:
                     type: string
-  /api/organization/staff/signup:
-    post:
-      description: An  OTP code would be sent to user email, the token sent would be used within the otp_token field
-      responses:
-        '200':    #status code
-          description: Success
-        '400':
-          description: bad request
-        '500':
-          description: Internal server error
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  email:
-                    type: string
-                    
-                  password:
-                    type: string
-
-                  otp_token:
-                    type: string 
-                  first_name:
-                    type: string
-                  last_name:
-                    type: string
-                  phone_number:
-                    type: string
-  /api/organization/wallet/update:
-    patch:
-      description: Allows an admin user to update wallet balance.
+                    example: 500
       responses:
         '200':    #status code
           description: Success
@@ -253,7 +279,91 @@ paths:
           description: Internal server error
         Authorization:  
           description:   Bearer access_token
-        requestBody:
+        
+  /api/organization/invite:
+    post:
+      description: Allows an admin user to send an invitation to join the organization.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+          schema:
+            type: string
+            format: token
+      
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: myuniquemail@gmail.com
+      
+      responses:
+        '200':    #status code
+          description: Success
+        '400':
+          description: bad request
+        '401':
+          description: Unauthorised (e.g., Bad Token)
+        '500':
+          description: Internal server error
+        
+  /api/organization/staff/signup:
+    post:
+      description: An  OTP code would be sent to user email, the token sent would be used within the otp_token field
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: myuniquemail@gmail.com
+                    
+                  password:
+                    type: string
+                    example: password123
+
+                  otp_token:
+                    type: string 
+                    example: 123455
+                  first_name:
+                    type: string
+                    example: myFirstName
+                  last_name:
+                    type: string
+                    example: myLastName
+                  phone_number:
+                    type: string
+                    example: 11222233344
+      responses:
+        '200':    #status code
+          description: Success
+        '400':
+          description: bad request (e.g., Wrong OTP)
+        '500':
+          description: Internal server error
+        
+  /api/organization/wallet/update:
+    patch:
+      description: Allows an admin user to update wallet balance.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+          schema:
+            type: string
+            format: token
+      
+      requestBody:
           required: true
           content:
             application/json:
@@ -262,10 +372,7 @@ paths:
                 properties:
                   amount:
                     type: string
-                    example: balance
-  /api/organization/launch/update:
-    patch:
-      description: Allows an admin user to update launch balance.
+                    example: 100
       responses:
         '200':    #status code
           description: Success
@@ -277,7 +384,20 @@ paths:
           description: Internal server error
         Authorization:  
           description:   Bearer access_token
-        requestBody:
+        
+  /api/organization/launch/update:
+    patch:
+      description: Allows an admin user to update launch balance.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+          schema:
+            type: string
+            format: token
+      
+      requestBody:
           required: true
           content:
             application/json:
@@ -286,13 +406,10 @@ paths:
                 properties:
                   launch_price:
                     type: string
-                    example: launch_price
-  /api/withdrawal/request:
-    patch:
-      description: Allows an admin user to update launch balance.
+                    example: 500
       responses:
         '200':    #status code
-          description: Withdrawal request created successfully
+          description: Success
         '400':
           description: bad request
         '401':
@@ -301,7 +418,20 @@ paths:
           description: Internal server error
         Authorization:  
           description:   Bearer access_token
-        requestBody:
+        
+  /api/withdrawal/request:
+    post:
+      description: Allows an admin user to update launch balance.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+          schema:
+            type: string
+            format: token
+      
+      requestBody:
           required: true
           content:
             application/json:
@@ -310,12 +440,54 @@ paths:
                 properties:
                   bank_name:
                     type: string
+                    example: bank
                   bank_number:
                     type: string
+                    example: 10023456789
                   bank_code:
                     type: string
+                    example: 123456
                   amount:
                     type: string
+                    example: 2000
+      responses:
+        '201':
+          description: Withdrawal request created successfuly.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Withdrawal request created successfuly
+                  statusCode:
+                    type: integer
+                    example: 201
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: unique-withdrawal-id
+                      user_id:
+                        type: string
+                        example: user-id
+                      status:
+                        type: string
+                        example: success
+                      amount:
+                        type: number
+                        example: 100
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: '2023-09-19T12:00:00Z'
+        '400':
+          description: Bad request. Invalid input.
+        '401':
+          description: Unauthorised (e.g., Bad Token)
+        
                     
     
 `;
