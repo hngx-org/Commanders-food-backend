@@ -44,6 +44,12 @@ class UserRoute {
       isAuthenticated,
       useCatchErrors(this.userController.redeemLunch.bind(this.userController))
     );
+
+    this.router.patch(
+      `${this.path}/bank`,
+      isAuthenticated,
+      useCatchErrors(this.userController.saveBankInfo.bind(this.userController))
+    );
   }
 }
 

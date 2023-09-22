@@ -30,7 +30,7 @@ async function isAuthenticated(req, res, next) {
 }
 
 async function isAdmin(req, res, next) {
-  const errormessage = "Not enough permissions to perform this action";
+  const errormessage = "Unauthorized Access";
 
   const user_id = req.user?.user_id; // req.user will be already set by isAuthenticated middleware
   if (!user_id) {
@@ -41,12 +41,12 @@ async function isAdmin(req, res, next) {
       where: { id: user_id },
     });
     if (!isAdmin) {
-      return res.status(403).json({ message: errormessage });
+      return res.status(401).json({ message: errormessage });
     }
     req.user.isAdmin = true;
     next();
   } catch (err) {
-    return res.status(403).json({ message: errormessage });
+    return res.status(403).json({ message: "Forbidden" });
   }
 }
 
