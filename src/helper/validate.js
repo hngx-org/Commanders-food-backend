@@ -33,10 +33,17 @@ const WithdrawalRequestSchema = Joi.object({
   amount: Joi.number().required(),
 });
 
+const SendLunchSchema = Joi.object({
+  receivers: Joi.array().items(Joi.string()),
+  quantity: Joi.number().required(),
+  note: Joi.string().required(),
+});
+
 module.exports = {
   UserSignupSchema,
   LoginSchema,
   organizationInvite,
   WithdrawalRequestSchema,
   StaffSignupSchema,
+  SendLunchSchema,
 };
