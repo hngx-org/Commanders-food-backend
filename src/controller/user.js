@@ -26,7 +26,7 @@ class UserController extends BaseController {
           name: `${user.first_name} ${user.last_name}`,
           email: user.email,
           phonenumber: user.phonenumber,
-          profile_picture: user.profile_picture,
+          profile_pic: user.profile_pic,
           lunch_credit_balance: user.lunch_credit_balance,
         },
       };
@@ -56,7 +56,7 @@ class UserController extends BaseController {
       data: users.map((user) => ({
         name: user.first_name + " " + user.last_name,
         email: user.email,
-        profile_picture: user.profile_picture,
+        profile_pic: user.profile_pic,
         user_id: user.id,
         organization: user.organization,
       })),
@@ -93,7 +93,7 @@ class UserController extends BaseController {
       data: users.map((user) => ({
         name: user.first_name + " " + user.last_name,
         email: user.email,
-        profile_picture: user.profile_picture,
+        profile_pic: user.profile_pic,
         user_id: user.id,
         organization: user.organization,
       })),

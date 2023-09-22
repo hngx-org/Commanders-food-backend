@@ -25,6 +25,7 @@ async function isAuthenticated(req, res, next) {
     };
     next();
   } catch (err) {
+    logger.error(`Forbidden: ${err.message}`);
     return res.status(403).json({ message: "Forbidden" });
   }
 }
@@ -37,15 +38,16 @@ async function isAdmin(req, res, next) {
     return res.status(403).json({ message: errormessage });
   }
   try {
-    const { isAdmin } = await prisma.user.findFirstOrThrow({
+    const { is_admin } = await prisma.user.findFirst({
       where: { id: user_id },
     });
-    if (!isAdmin) {
+    if (!is_admin) {
       return res.status(401).json({ message: errormessage });
     }
     req.user.isAdmin = true;
     next();
   } catch (err) {
+    logger.error(`Not Admin: ${err.message}`);
     return res.status(403).json({ message: "Forbidden" });
   }
 }

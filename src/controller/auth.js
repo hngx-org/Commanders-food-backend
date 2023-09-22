@@ -1,5 +1,10 @@
 const prisma = require("../config/prisma");
-const { randomId, passwordManager, JwtTokenManager } = require("../helper");
+const {
+  randomId,
+  passwordManager,
+  JwtTokenManager,
+  genRandomIntId,
+} = require("../helper");
 const { UserSignupSchema, LoginSchema } = require("../helper/validate");
 const BaseController = require("./base");
 const shortId = require("short-uuid");
@@ -27,8 +32,9 @@ class AuthController extends BaseController {
 
     const profilePic = `https://api.dicebear.com/7.x/micah/svg?seed=${first_name}`;
     const pwdHash = passwordManager.hash(password);
-    const user_id = shortId.generate();
-    const org_id = shortId.generate();
+    const user_id = genRandomIntId();
+    const org_id = genRandomIntId();
+    const defaultCurrency = "NGN";
 
     // resaon of generating this, is the auth_token would be used later when
     // updating organization info
@@ -46,11 +52,11 @@ class AuthController extends BaseController {
         id: user_id,
         first_name,
         last_name,
-        profile_picture: profilePic,
-        phonenumber: phone_number,
+        profile_pic: profilePic,
+        phone: phone_number,
         password_hash: pwdHash,
         refresh_token: refreshToken,
-        isAdmin: true,
+        is_admin: true,
         email,
         org_id,
         created_at: new Date(),
@@ -61,23 +67,24 @@ class AuthController extends BaseController {
     // create organization
     const createOrganization = prisma.organization.create({
       data: {
-        lunch_price: String(1000),
+        lunch_price: 1000,
         id: org_id,
+        currency_code: defaultCurrency,
       },
     });
 
     // create organization default wallet
     const createOrgWallet = prisma.organizationLunchWallet.create({
       data: {
-        id: shortId.generate(),
-        balance: String(1000),
+        id: genRandomIntId(),
+        balance: 10000,
         org_id,
       },
     });
 
     await prisma.$transaction([
-      createUser,
       createOrganization,
+      createUser,
       createOrgWallet,
     ]);
 

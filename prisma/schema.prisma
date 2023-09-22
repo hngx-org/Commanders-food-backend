@@ -11,24 +11,24 @@ datasource db {
 
 // schema.prisma
 model User {
-    id                   String   @id @unique @map(name: "id")
-    org_id               String   @map(name: "org_id")
-    first_name           String   @map(name: "first_name")
-    last_name            String   @map(name: "last_name")
-    profile_picture      String?  @map(name: "profile_picture")
-    email                String
-    phonenumber          String
-    password_hash        String   @map(name: "password_hash")
-    isAdmin              Boolean  @default(false) @map(name: "isAdmin")
-    lunch_credit_balance String?  @default("0") @map(name: "lunch_credit_balance")
-    refresh_token        String   @map(name: "refresh_token") @db.VarChar(255)
-    bank_number          String?  @map(name: "bank_number")
-    bank_code            String?  @map(name: "bank_code")
-    bank_name            String?  @map(name: "bank_name")
-    bank_region          String?  @map(name: "bank_region")
-    currency_code        String?  @map(name: "currency_code")
-    updated_at           DateTime @default(now()) @map(name: "updated_at")
-    created_at           DateTime @default(now()) @map(name: "created_at")
+    id                   Int       @id @unique @default(autoincrement())
+    org_id               Int?      @map(name: "org_id")
+    first_name           String?   @map(name: "first_name") @db.VarChar(255)
+    last_name            String?   @map(name: "last_name") @db.VarChar(255)
+    profile_pic          String?   @map(name: "profile_pic") @db.VarChar(255)
+    email                String    @unique @db.VarChar(255)
+    phone                String?   @db.VarChar(20) // Assuming phone is a string
+    password_hash        String    @map(name: "password_hash")
+    is_admin             Boolean   @default(false) @map(name: "is_admin")
+    lunch_credit_balance Int?      @map(name: "lunch_credit_balance")
+    refresh_token        String?   @map(name: "refresh_token") @db.VarChar(255)
+    bank_number          String?   @map(name: "bank_number")
+    bank_code            String?   @map(name: "bank_code")
+    bank_name            String?   @map(name: "bank_name")
+    bank_region          String?   @map(name: "bank_region")
+    currency_code        String?   @map(name: "currency_code")
+    updated_at           DateTime? @default(now()) @map(name: "updated_at")
+    created_at           DateTime? @default(now()) @map(name: "created_at")
 
     withdrawals    Withdrawal[]
     organization   Organization? @relation(fields: [org_id], references: [id], onDelete: Cascade)
@@ -40,68 +40,70 @@ model User {
     @@map(name: "users")
 }
 
+model Organization {
+    id            Int      @id @default(autoincrement())
+    name          String?  @default("")
+    lunch_price   Decimal? @map(name: "lunch_price") @db.Decimal(10, 2)
+    currency_code String   @db.VarChar(4)
+
+    lunches             Lunch[]
+    user                User[] // N-M
+    organization_wallet OrganizationLunchWallet?
+
+    @@map(name: "organizations")
+}
+
+model OrganizationLunchWallet {
+    id      Int     @id @unique @default(autoincrement()) @map(name: "id")
+    balance Decimal @map(name: "balance") @db.Decimal(10, 2)
+    org_id  Int     @unique @map(name: "org_id")
+
+    organization Organization? @relation(fields: [org_id], references: [id], onDelete: Cascade)
+
+    @@map(name: "organization_lunch_wallets")
+}
+
 model Withdrawal {
-    id         String    @id @unique @map(name: "id")
-    user_id    String    @map(name: "user_id")
+    id         Int       @id @unique @default(autoincrement())
+    user_id    Int       @map(name: "user_id")
     status     String
-    amount     BigInt
+    amount     Decimal   @map(name: "amount") @db.Decimal(10, 2)
     created_at DateTime? @default(now())
-    user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade) // N-M
+    user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
     @@index([id])
     @@index([user_id])
     @@map(name: "withdrawals")
 }
 
-model Organization {
-    id          String  @id @unique @map(name: "id")
-    name        String?
-    lunch_price String? @map(name: "lunch_price")
-    currency    String?
-
-    lunches             Lunch[]
-    user                User[] // N-M
-    organization_wallet OrganizationLunchWallet?
-
-    @@map(name: "organization")
-}
-
 model OrganizationInvite {
-    id    String    @map(name: "id")
-    email String?
-    token String    @unique
-    TTL   DateTime? @default(now())
+    id         Int      @id @default(autoincrement()) @map(name: "id")
+    email      String?
+    token      String
+    ttl        DateTime @default(now()) @map(name: "ttl") @db.DateTime()
+    org_id     Int      @map(name: "org_id")
+    created_at DateTime @default(now()) @db.DateTime()
 
     @@map(name: "organization_invites")
 }
 
 model Lunch {
-    id         String   @id @unique @map(name: "id")
-    senderId   String   @map(name: "senderId")
-    receiverId String   @map(name: "receiverId")
-    quantity   Int
-    redeemed   Boolean  @map(name: "redeemed")
-    created_at DateTime @map(name: "created_at")
-    note       String
-    org_id     String
+    id          Int       @id @default(autoincrement())
+    org_id      Int       @map(name: "org_id")
+    sender_id   Int       @map(name: "sender_id")
+    receiver_id Int       @map(name: "receiver_id")
+    quantity    Int
+    redeemed    Boolean   @map(name: "redeemed")
+    created_at  DateTime? @map(name: "created_at")
+    note        String?
 
     organization Organization @relation(fields: [org_id], references: [id], onDelete: Cascade)
-    sender       User         @relation("sender", fields: [senderId], references: [id], onDelete: Cascade) // N-M
-    receiver     User         @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade) // N-M
+    sender       User         @relation("sender", fields: [sender_id], references: [id], onDelete: Cascade) // N-M
+    receiver     User         @relation("receiver", fields: [receiver_id], references: [id], onDelete: Cascade) // N-M
 
     @@index([id])
-    @@index([senderId])
-    @@index([receiverId])
     @@index([org_id])
+    @@index([sender_id])
+    @@index([receiver_id])
     @@map(name: "lunches")
-}
-
-model OrganizationLunchWallet {
-    id      String @id @unique @map(name: "id")
-    balance String @default("0")
-    org_id  String @map(name: "org_id")
-
-    organization Organization? @relation(fields: [id], references: [id], onDelete: Cascade)
-
-    @@map(name: "organization_lunch_wallet")
 }
