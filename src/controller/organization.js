@@ -123,7 +123,7 @@ class OrganizationController extends BaseController {
       return this.error(res, "Internal server error", 500);
     }
 
-    
+  }
   async createOrganizationInvite(req, res) {
     const { error } = organizationInvite.validate(req.body);
 
