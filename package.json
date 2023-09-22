@@ -21,6 +21,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "joi": "^17.10.2",
+    "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.0",
     "short-uuid": "^4.2.2",
     "swagger-jsdoc": "^6.2.8",
@@ -34,5 +35,13 @@
   },
   "prisma": {
     "schema": "./prisma/schema.prisma"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hngx-org/Commanders-food-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hngx-org/Commanders-food-backend/issues"
+  },
+  "homepage": "https://github.com/hngx-org/Commanders-food-backend#readme"
 }

@@ -55,11 +55,13 @@ class AuthController extends BaseController {
         org_id,
         created_at: new Date(),
         updated_at: new Date(),
-        organization: {
-          create: {
-            lunch_price: String(1000),
-          },
-        },
+      },
+    });
+
+    await prisma.organization.create({
+      data: {
+        lunch_price: String(1000),
+        id: org_id,
       },
     });
 
