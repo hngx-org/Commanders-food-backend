@@ -164,12 +164,12 @@ paths:
       
   /api/organization/create:
     put:
-      description: Allows an admin user to create the organization.
+      description: Allows an admin user to send an invitation to join the organization.
       responses:
         '200':    #status code
           description: Success
         '400':
-        description: bad request
+          description: bad request
         '401':
           description: Unauthorised (e.g., Bad Token)
         '500':
@@ -183,9 +183,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  organization_name:
-                    type: string
-                  lunch_price:
+                  email:
                     type: string
   /api/organization/invite:
     post:
