@@ -1,0 +1,6 @@
+{
+  "recommendations": [
+    "kennylong.kubernetes-yaml-formatter",
+    "redhat.vscode-yaml"
+  ]
+}
