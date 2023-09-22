@@ -91,8 +91,8 @@ class OrganizationController extends BaseController {
     this.success(res, "Successfully topped-up lunch wallet", 200);
   }
   async updateLunchPrice(req, res) {
-    const orgId = req.user.org_id; 
-    const { lunch_price } = req.body; 
+    const orgId = req.user.org_id;
+    const { lunch_price } = req.body;
     try {
       const existingOrganization = await prisma.organization.findUnique({
         where: {
@@ -117,12 +117,16 @@ class OrganizationController extends BaseController {
       if (!updatedOrganization) {
         return this.error(res, "Failed to update lunch_price", 500);
       }
-      this.success(res, {message:"sucess"},{statuscode:200}, {data:null});
+      this.success(
+        res,
+        { message: "sucess" },
+        { statuscode: 200 },
+        { data: null }
+      );
     } catch (error) {
       console.error(error);
       return this.error(res, "Internal server error", 500);
     }
-
   }
   async createOrganizationInvite(req, res) {
     const { error } = organizationInvite.validate(req.body);
@@ -173,7 +177,32 @@ class OrganizationController extends BaseController {
       process.env.NODE_ENV !== "production" && otp
     );
   }
-}
 
+  async updateOrganizationInfo(req, res) {
+    const { org_id } = req.user;
+    const payload = req.body;
+
+    //validating payload
+    const { error } = OrganizationSchema.validate(payload);
+    if (error) {
+      return this.error(res, error.message, 400);
+    }
+
+    const { organization_name, lunch_price } = payload;
+
+    //update to database
+    await prisma.organization.update({
+      where: {
+        id: org_id,
+      },
+      data: {
+        name: organization_name,
+        lunch_price: String(lunch_price),
+      },
+    });
+
+    this.success(res, "success", 200);
+  }
+}
 
 module.exports = OrganizationController;
