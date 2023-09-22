@@ -58,21 +58,18 @@ model Organization {
     lunch_price String? @map(name: "lunch_price")
     currency    String?
 
-    organization_invites OrganizationInvite[]
-    lunches              Lunch[]
-    user                 User[] // N-M
-    organization_wallet  OrganizationLunchWallet?
+    lunches             Lunch[]
+    user                User[] // N-M
+    organization_wallet OrganizationLunchWallet?
 
     @@map(name: "organization")
 }
 
 model OrganizationInvite {
-    id    String    @id @unique @map(name: "id")
+    id    String    @id @map(name: "id")
     email String?
     token String?
     TTL   DateTime? @default(now())
-
-    organization Organization @relation(fields: [id], references: [id], onDelete: Cascade) // N-M
 
     @@map(name: "organization_invites")
 }
@@ -100,10 +97,10 @@ model Lunch {
 
 model OrganizationLunchWallet {
     id      String @id @unique @map(name: "id")
-    balance String
+    balance String @default("0")
     org_id  String @map(name: "org_id")
 
-    organization Organization @relation(fields: [id], references: [id], onDelete: Cascade)
+    organization Organization? @relation(fields: [id], references: [id], onDelete: Cascade)
 
     @@map(name: "organization_lunch_wallet")
 }

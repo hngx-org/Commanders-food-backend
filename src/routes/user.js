@@ -1,12 +1,12 @@
-const express = require("express");
-const UserController = require("../controller/user");
-const useCatchErrors = require("../error/catchErrors");
-const { isAuthenticated } = require("../middlewares/auth");
+const express = require('express');
+const UserController = require('../controller/user');
+const useCatchErrors = require('../error/catchErrors');
+const { isAuthenticated } = require('../middlewares/auth');
 
 class UserRoute {
   router = express.Router();
   userController = new UserController();
-  path = "/user";
+  path = '/user';
 
   constructor() {
     this.initializeRoutes();
@@ -23,11 +23,18 @@ class UserRoute {
       )
     );
 
-    // Route to get all users
+    // Endpoint Route to get all users
     this.router.get(
       `${this.path}/all`,
       isAuthenticated,
       useCatchErrors(this.userController.allUsers.bind(this.userController))
+    );
+
+    // redeem user lunch
+    this.router.post(
+      `${this.path}/redeem`,
+      isAuthenticated,
+      useCatchErrors(this.userController.redeemLunch.bind(this.userController))
     );
   }
 }

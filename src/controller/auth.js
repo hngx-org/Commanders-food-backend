@@ -16,7 +16,7 @@ class AuthController extends BaseController {
       return this.error(res, error.message, 400);
     }
 
-    const { email, password, first_name, last_name, phonenumber } = payload;
+    const { email, password, first_name, last_name, phone_number } = payload;
 
     // check if user exists of not
     const userExists = await prisma.user.findMany({ where: { email } });
@@ -41,13 +41,13 @@ class AuthController extends BaseController {
       org_id,
     });
 
-    await prisma.user.create({
+    const createUser = prisma.user.create({
       data: {
         id: user_id,
         first_name,
         last_name,
         profile_picture: profilePic,
-        phonenumber,
+        phonenumber: phone_number,
         password_hash: pwdHash,
         refresh_token: refreshToken,
         isAdmin: true,
@@ -55,13 +55,31 @@ class AuthController extends BaseController {
         org_id,
         created_at: new Date(),
         updated_at: new Date(),
-        organization: {
-          create: {
-            lunch_price: String(1000),
-          },
-        },
       },
     });
+
+    // create organization
+    const createOrganization = prisma.organization.create({
+      data: {
+        lunch_price: String(1000),
+        id: org_id,
+      },
+    });
+
+    // create organization default wallet
+    const createOrgWallet = prisma.organizationLunchWallet.create({
+      data: {
+        id: shortId.generate(),
+        balance: String(1000),
+        org_id,
+      },
+    });
+
+    await prisma.$transaction([
+      createUser,
+      createOrganization,
+      createOrgWallet,
+    ]);
 
     this.success(res, "successfully", 200, {
       access_token: accessToken,
@@ -84,7 +102,7 @@ class AuthController extends BaseController {
     const userExists = await prisma.user.findFirst({ where: { email } });
 
     if (userExists === null) {
-      return this.error(res, "user with this email already exists.", 400);
+      return this.error(res, "Account notfound.", 400);
     }
 
     // compare password
