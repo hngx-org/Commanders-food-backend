@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const BaseController = require("./base");
 const { saveBankInfoShema } = require("../helper/validate");
+const { lunch } = require("../config/prisma");
 
 class UserController extends BaseController {
   constructor() {
@@ -101,11 +102,28 @@ class UserController extends BaseController {
 
     const lunches = await prisma.lunch.findMany({
       where: {
-        id: {
-          in: ids,
+        AND: {
+          id: {
+            in: ids,
+          },
+          receiver_id: req?.user?.user_id,
+          org_id: req?.user?.org_id,
         },
       },
     });
+    const user = await prisma.user.findFirst({
+      where: { id: req.user?.user_id },
+      include: { organization: true },
+    });
+
+    // check if one of the lunch id doesn't exist
+    if (lunches.length !== ids.length) {
+      return this.error(
+        res,
+        "One or more of the specified lunch do not exist.",
+        404
+      );
+    }
 
     if (lunches.length === 0) {
       return this.error(res, "No lunch found", 404);
@@ -113,43 +131,29 @@ class UserController extends BaseController {
 
     for (const lunch of lunches) {
       if (!lunch.redeemed) {
-        const organisation = await prisma.organization.findUnique({
+        // update lunch
+        await prisma.lunch.update({
           where: {
-            id: lunch.org_id,
+            id: lunch.id,
+          },
+          data: {
+            redeemed: true,
+            quantity: 0,
           },
         });
 
-        const user = await prisma.user.findUnique({
+        // update user
+        const lunchCreditBalance =
+          user.lunch_credit_balance +
+          lunch.quantity * user.organization.lunch_price;
+        await prisma.user.update({
           where: {
             id: lunch.receiver_id,
           },
+          data: {
+            lunch_credit_balance: lunchCreditBalance,
+          },
         });
-
-        if (organisation && user) {
-          // update lunch
-          await prisma.lunch.update({
-            where: {
-              id: lunch.id,
-            },
-            data: {
-              redeemed: true,
-              quantity: 0,
-            },
-          });
-
-          // update user
-          const lunchCreditBalance =
-            user.lunch_credit_balance +
-            lunch.quantity * organisation.lunch_price;
-          await prisma.user.update({
-            where: {
-              id: lunch.receiver_id,
-            },
-            data: {
-              lunch_credit_balance: lunchCreditBalance,
-            },
-          });
-        }
       } else {
         return this.error(
           res,
