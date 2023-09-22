@@ -1,8 +1,8 @@
 const swagger = `
 openapi: 3.0.0
 info:
-  title: My Node.js API
-  description: Documentation for My Node.js API
+  title: Free Lunch API
+  description: Documentation for Free Lunch API
   version: 1.0.0
 
 paths:
