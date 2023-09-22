@@ -39,6 +39,10 @@ const SendLunchSchema = Joi.object({
   note: Joi.string().required(),
 });
 
+const UpdateLunchPriceSchema = Joi.object({
+  lunch_price: Joi.number().min(1).required(),
+});
+
 module.exports = {
   UserSignupSchema,
   LoginSchema,
@@ -46,4 +50,5 @@ module.exports = {
   WithdrawalRequestSchema,
   StaffSignupSchema,
   SendLunchSchema,
+  UpdateLunchPriceSchema,
 };
