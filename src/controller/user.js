@@ -139,6 +139,42 @@ class UserController extends BaseController {
       200
     );
   }
+
+  async saveBankInfo(req, res) {
+    const user_id = req.user?.user_id;
+
+    const payload = req.body;
+
+    const { error } = saveBankInfoShema.validate(payload);
+    if (error) {
+      return this.error(res, error.message, 400);
+    }
+
+    const { bank_name, bank_code, bank_number, bank_region } = payload;
+
+    const user = await prisma.user.findUnique({
+      where: { id: user_id },
+    });
+    const errorData = {
+      message: `User with id ${user_id} does not exist`,
+    };
+    if (!user) this.error(res, "User not found", 404, errorData);
+    const updateUserBankDetails = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        bank_name: bank_name,
+        bank_code: bank_code,
+        bank_number: bank_number,
+        bank_region: bank_region,
+      },
+    });
+    this.success(
+      res,
+      "successfully created bank account",
+      200,
+      updateUserBankDetails
+    );
+  }
 }
 
 module.exports = UserController;
