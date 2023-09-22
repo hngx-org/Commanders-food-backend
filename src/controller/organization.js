@@ -1,12 +1,10 @@
-const { PrismaClient } = require("@prisma/client");
 const short = require("short-uuid");
-const prisma = new PrismaClient();
 const BaseController = require("./base");
 const { passwordManager } = require("../helper/index");
 const { StaffSignupSchema, organizationInvite } = require("../helper/validate");
-const { sendEMail } = require('../helper/sendemail');
-const otpGenerator = require('otp-generator');
-
+const sendEmail = require("../helper/sendMail");
+const otpGenerator = require("otp-generator");
+const prisma = require("../config/prisma");
 
 class OrganizationController extends BaseController {
   constructor() {
@@ -39,32 +37,6 @@ class OrganizationController extends BaseController {
     if (staffExists !== null) {
       return this.error(res, "User already exists", 400);
     }
-    async createOrganizationInvite(req, res) {
-      const { error } = organizationInvite.validate(req.body);
-
-      if (error) {
-        return this.error(res, error.message, 400);
-      }
-        const { email } = req.body;
-
-        const emailExists = await prisma.user.findFirst({ where: { email: email } });
-        if (emailExists !== null) {
-            return this.error(res, "User already exists", 400);
-        }
-        const otp = otpGenerator.generate(6,
-          { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
-
-        const subject = 'Invitation to Join Free Lunch Organization';
-        const body = `
-          You've been invited to join an organization on Free Lunch!
-
-          Use the OTP below to accept the invitation:
-          ${otp}`;
-
-        // Send email using helper function
-        const sendmail = await sendMail({to: email, subject, text: body});
-        return this.success(res, "success", 200);
-    };
 
     const newStaff = await prisma.user.create({
       data: {
@@ -82,7 +54,13 @@ class OrganizationController extends BaseController {
         isAdmin: false,
       },
     });
-    this.success(res, "Staff member created successfully", 201, newStaff);
+    this.success(res, "Staff member created successfully", 201, {
+      id: newStaff.id,
+      email: newStaff.email,
+      first_name: newStaff.first_name,
+      last_name: newStaff.last_name,
+      profile_picture: newStaff.profile_picture,
+    });
   }
 
   async updateOrgWalletBalance(req, res) {
@@ -144,7 +122,58 @@ class OrganizationController extends BaseController {
       console.error(error);
       return this.error(res, "Internal server error", 500);
     }
+
+    
+  async createOrganizationInvite(req, res) {
+    const { error } = organizationInvite.validate(req.body);
+
+    if (error) {
+      return this.error(res, error.message, 400);
+    }
+    const { email } = req.body;
+    const { org_id } = req.user;
+
+    const emailExists = await prisma.user.findFirst({
+      where: { email },
+    });
+    if (emailExists !== null) {
+      return this.error(res, "User already exists", 400);
+    }
+    const otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+      lowerCaseAlphabets: false,
+    });
+
+    // store token in database
+    await prisma.organizationInvite.create({
+      data: {
+        id: org_id,
+        email,
+        token: otp,
+      },
+    });
+
+    const subject = "Invitation to Join Free Lunch Organization";
+    const body = `
+    <h1>Free Lunch Organization Invite<h1/>
+    
+    <p>You've been invited to join an organization on Free Lunch!</p>
+
+    <p>Use the OTP below to accept the invitation:</p>
+    <h1>${otp}</h1>.
+    `;
+
+    // Send email using helper function
+    await sendEmail({ to: email, subject, text: body });
+    return this.success(
+      res,
+      "success",
+      200,
+      process.env.NODE_ENV !== "production" && otp
+    );
   }
+}
 }
 
 module.exports = OrganizationController;

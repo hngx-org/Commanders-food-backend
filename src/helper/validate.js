@@ -22,9 +22,9 @@ const LoginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
- const organizationInvite = Joi.object({
-  email: Joi.string.required(),
- });
+const organizationInvite = Joi.object({
+  email: Joi.string().required(),
+});
 
 const WithdrawalRequestSchema = Joi.object({
   bank_name: Joi.string().required(),

@@ -57,7 +57,6 @@ CREATE TABLE `organization_invites` (
     `token` VARCHAR(191) NULL,
     `TTL` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `organization_invites_id_key`(`id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

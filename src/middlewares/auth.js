@@ -1,6 +1,7 @@
 // is authenticated
 const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
+const logger = require("../config/logger");
 const prisma = new PrismaClient();
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -63,7 +64,6 @@ async function verifyOTP(req, res, next) {
   try {
     const otpExists = await prisma.organizationInvite.findFirst({
       where: { token: OTP },
-      include: { organization: true },
     });
 
     if (otpExists === null) {
@@ -71,11 +71,11 @@ async function verifyOTP(req, res, next) {
     }
 
     // delete token from db
-    await prisma.organizationInvite.delete({
-      where: { id: otpExists?.organization?.id },
+    await prisma.organizationInvite.deleteMany({
+      where: { email: otpExists?.email },
     });
 
-    req.user = { org_id: otpExists?.organization.id };
+    req.user = { org_id: otpExists?.id };
     next();
   } catch (e) {
     logger.error(`Invalid OTP code: ${e.message}`);
