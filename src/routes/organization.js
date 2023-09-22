@@ -1,7 +1,7 @@
 const express = require('express');
 const OrganizationController = require('../controller/organization');
 const useCatchErrors = require("../error/catchErrors");
-const { isAuthenticated } = require('../middlewares/auth');
+const { isAuthenticated, } = require('../middlewares/auth');
 
 class OrganizationRoute {
   router = express.Router();
@@ -17,6 +17,7 @@ class OrganizationRoute {
     this.router.put(
       `${this.path}/create`,
       isAuthenticated,
+      isAdmin,
       useCatchErrors(this.organizationController.updateOrganization.bind(this.organizationController))
     );
   }

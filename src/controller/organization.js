@@ -7,7 +7,7 @@ class OrganizationController extends BaseController {
         super();
     }
 
-    async updateOrganization(req, res){
+    async updateOrganizationInfo(req, res){
         const{org_id} = req.user;
         const payload = req.body;
 
@@ -17,35 +17,20 @@ class OrganizationController extends BaseController {
             return this.error(res, error.message, 400);
         }
 
-        var {organization_name, lunch_price} = payload;
-
-        //find organization
-        const organization = await prisma.organization.findUnique({
-            where: {
-              id: org_id,
-            },
-          });
-        
-        // Setting default value of lunch price when not specified
-        if (!lunch_price) {
-            var lunch_price = "1000";
-        }
-
-        // update organization
-        organization.name = organization_name;
-        organization.lunch_price = lunch_price;
+        const {organization_name, lunch_price} = payload;
 
         //update to database
         await prisma.organization.update({
             where: {
               id: org_id,
             },
-            data: organization, 
+            data: {
+              name: organization_name,
+              lunch_price: String(lunch_price)
+            }, 
           });
 
-        this.success(res, "success",200, {
-            message: "organization added sucessfully"
-        });
+        this.success(res, "success", 200);
     }
 }
 

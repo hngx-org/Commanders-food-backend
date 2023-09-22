@@ -15,7 +15,7 @@ const LoginSchema = Joi.object({
 
 const OrganizationSchema = Joi.object({
   organization_name: Joi.string().required(),
-  lunch_price: Joi.string().allow(null,"")
+  lunch_price: Joi.number().required()
 })
 
 module.exports = {
