@@ -170,7 +170,11 @@ class UserController extends BaseController {
       }
     }
 
-    return this.success(res, "Lunches redeemed successfully", 200);
+    return this.success(
+      res,
+      `${ids.length > 1 ? "Lunches" : "Lunch"} redeemed successfully`,
+      200
+    );
   }
 }
 
