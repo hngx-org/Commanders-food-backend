@@ -44,23 +44,27 @@ class OrganizationRoute {
         )
       )
     );
-     this.router.patch(
+    this.router.patch(
       `${this.path}/lunch/update`,
       isAuthenticated,
-      isAdmin, 
+      isAdmin,
       useCatchErrors(
         this.organizationController.updateLunchPrice.bind(
-          this.organizationController)
+          this.organizationController
+        )
       )
-     )
-  }
-  initializeRoutes() {
+    );
+
     //test endpoints
     this.router.put(
       `${this.path}/create`,
       isAuthenticated,
       isAdmin,
-      useCatchErrors(this.organizationController.updateOrganizationInfo.bind(this.organizationController))
+      useCatchErrors(
+        this.organizationController.updateOrganizationInfo.bind(
+          this.organizationController
+        )
+      )
     );
   }
 }
