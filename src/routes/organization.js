@@ -54,6 +54,15 @@ class OrganizationRoute {
       )
      )
   }
+  initializeRoutes() {
+    //test endpoints
+    this.router.put(
+      `${this.path}/create`,
+      isAuthenticated,
+      isAdmin,
+      useCatchErrors(this.organizationController.updateOrganizationInfo.bind(this.organizationController))
+    );
+  }
 }
 
 module.exports = OrganizationRoute;
