@@ -15,7 +15,7 @@
   "license": "ISC",
   "description": "Scaffolded using prospark",
   "dependencies": {
-    "@prisma/client": "^4.12.0",
+    "@prisma/client": "^4.16.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -23,6 +23,8 @@
     "joi": "^17.10.2",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.0",
+    "nodemailer": "^6.9.5",
+    "otp-generator": "^4.0.1",
     "short-uuid": "^4.2.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
@@ -35,13 +37,5 @@
   },
   "prisma": {
     "schema": "./prisma/schema.prisma"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hngx-org/Commanders-food-backend.git"
-  },
-  "bugs": {
-    "url": "https://github.com/hngx-org/Commanders-food-backend/issues"
-  },
-  "homepage": "https://github.com/hngx-org/Commanders-food-backend#readme"
+  }
 }

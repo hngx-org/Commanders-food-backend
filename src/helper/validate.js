@@ -22,16 +22,41 @@ const LoginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const organizationInvite = Joi.object({
+  email: Joi.string().required(),
+});
+
 const WithdrawalRequestSchema = Joi.object({
-  bank_name: Joi.string().required() , 
-  bank_number: Joi.number().required(), 
-  bank_code: Joi.number().required(), 
+  bank_name: Joi.string().required(),
+  bank_number: Joi.string().required(),
+  bank_code: Joi.string().required(),
   amount: Joi.number().required(),
+});
+
+const SendLunchSchema = Joi.object({
+  receivers: Joi.array().items(Joi.string()),
+  quantity: Joi.number().required(),
+  note: Joi.string().required(),
+});
+
+const UpdateLunchPriceSchema = Joi.object({
+  lunch_price: Joi.number().min(1).required(),
+});
+
+const saveBankInfoShema = Joi.object({
+  bank_name: Joi.string().required(),
+  bank_number: Joi.string().required(),
+  bank_code: Joi.string().required(),
+  bank_region: Joi.string().required(),
 });
 
 module.exports = {
   UserSignupSchema,
   LoginSchema,
+  organizationInvite,
   WithdrawalRequestSchema,
-  StaffSignupSchema
+  StaffSignupSchema,
+  SendLunchSchema,
+  UpdateLunchPriceSchema,
+  saveBankInfoShema,
 };

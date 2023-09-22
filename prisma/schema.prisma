@@ -3,9 +3,10 @@ generator client {
 }
 
 datasource db {
-    provider     = "mysql"
-    url          = env("DATABASE_URL")
-    relationMode = "prisma"
+    provider          = "mysql"
+    url               = env("DATABASE_URL")
+    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+    relationMode      = "prisma"
 }
 
 // schema.prisma
@@ -15,7 +16,7 @@ model User {
     first_name           String   @map(name: "first_name")
     last_name            String   @map(name: "last_name")
     profile_picture      String?  @map(name: "profile_picture")
-    email                String   @unique
+    email                String
     phonenumber          String
     password_hash        String   @map(name: "password_hash")
     isAdmin              Boolean  @default(false) @map(name: "isAdmin")
@@ -55,25 +56,21 @@ model Withdrawal {
 model Organization {
     id          String  @id @unique @map(name: "id")
     name        String?
-    email       String?
-    lunch_price String? @default("1000") @map(name: "lunch_price")
+    lunch_price String? @map(name: "lunch_price")
     currency    String?
 
-    organization_invites OrganizationInvite[]
-    lunches              Lunch[]
-    user                 User[] // N-M
-    organization_wallet  OrganizationLunchWallet?
+    lunches             Lunch[]
+    user                User[] // N-M
+    organization_wallet OrganizationLunchWallet?
 
     @@map(name: "organization")
 }
 
 model OrganizationInvite {
-    id    String    @id @unique @map(name: "id")
+    id    String    @id @map(name: "id")
     email String?
     token String?
     TTL   DateTime? @default(now())
-
-    organization Organization @relation(fields: [id], references: [id], onDelete: Cascade) // N-M
 
     @@map(name: "organization_invites")
 }
@@ -101,10 +98,10 @@ model Lunch {
 
 model OrganizationLunchWallet {
     id      String @id @unique @map(name: "id")
-    balance String
+    balance String @default("0")
     org_id  String @map(name: "org_id")
 
-    organization Organization @relation(fields: [id], references: [id], onDelete: Cascade)
+    organization Organization? @relation(fields: [id], references: [id], onDelete: Cascade)
 
     @@map(name: "organization_lunch_wallet")
 }

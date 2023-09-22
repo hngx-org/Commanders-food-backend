@@ -13,7 +13,8 @@ class UserRoute {
   }
 
   initializeRoutes() {
-    //Route to get user profile
+    // route for getting user profile information
+
     this.router.get(
       `${this.path}/profile`,
       isAuthenticated,
@@ -22,18 +23,32 @@ class UserRoute {
       )
     );
 
-    // Route to get all users
+    // Endpoint Route to get all users
     this.router.get(
-      `${this.path}/users`,
+      `${this.path}/all`,
+      isAuthenticated,
       useCatchErrors(this.userController.allUsers.bind(this.userController))
     );
-    // Route to search a user by Name or Email
+    // Search User
     this.router.get(
       `${this.path}/search/:query`,
       isAuthenticated,
       useCatchErrors(
         this.userController.searchUserByNameOrEmail.bind(this.userController)
       )
+    );
+
+    // redeem user lunch
+    this.router.post(
+      `${this.path}/redeem`,
+      isAuthenticated,
+      useCatchErrors(this.userController.redeemLunch.bind(this.userController))
+    );
+
+    this.router.patch(
+      `${this.path}/bank`,
+      isAuthenticated,
+      useCatchErrors(this.userController.saveBankInfo.bind(this.userController))
     );
   }
 }
