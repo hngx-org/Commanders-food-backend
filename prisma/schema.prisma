@@ -67,9 +67,9 @@ model Organization {
 }
 
 model OrganizationInvite {
-    id    String    @id @map(name: "id")
+    id    String    @map(name: "id")
     email String?
-    token String?
+    token String    @unique
     TTL   DateTime? @default(now())
 
     @@map(name: "organization_invites")
