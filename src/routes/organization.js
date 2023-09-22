@@ -14,10 +14,10 @@ class OrganizationRoute {
 
   initializeRoutes() {
     //test endpoints
-    this.router.post(
+    this.router.put(
       `${this.path}/create`,
-      //isAuthenticated,
-      useCatchErrors(this.organizationController.createOrganization.bind(this.organizationController))
+      isAuthenticated,
+      useCatchErrors(this.organizationController.updateOrganization.bind(this.organizationController))
     );
   }
 }
