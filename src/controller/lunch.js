@@ -36,7 +36,7 @@ class LunchController extends BaseController {
 
     const allLunchdata = await prisma.Lunch.findMany({
         where: {
-            receiverId: req.user.user_id,//test value waiting for id from auth
+            receiverId: req.user.user_id,
         },
     });
 
@@ -48,6 +48,8 @@ class LunchController extends BaseController {
             allLunchdata
         );
     }
+
+    this.success(res, "All Lunch data fetched successfully", 200, allLunchdata);
   }
   
 }
