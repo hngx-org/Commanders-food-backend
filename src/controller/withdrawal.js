@@ -2,6 +2,7 @@ const prisma = require("../config/prisma");
 const BaseController = require("./base");
 const { WithdrawalRequestSchema } = require("../helper/validate");
 const shortId = require("short-uuid");
+const { genRandomIntId } = require("../helper");
 
 class WithdrawalController extends BaseController {
   constructor() {
@@ -22,7 +23,7 @@ class WithdrawalController extends BaseController {
     const { user_id, org_id } = req?.user;
     // check organization balance
     const organizationBalance = await prisma.organizationLunchWallet.findFirst({
-      where: { org_id: org_id },
+      where: { org_id },
     });
     const orgWalletBalance = organizationBalance?.balance;
 
@@ -52,8 +53,7 @@ class WithdrawalController extends BaseController {
     await prisma.user.update({
       where: { id: user_id },
       data: {
-        lunch_credit_balance:
-          finalUserLunchBal < 0 ? "0" : String(finalUserLunchBal),
+        lunch_credit_balance: finalUserLunchBal < 0 ? 0 : finalUserLunchBal,
       },
     });
 
@@ -61,7 +61,7 @@ class WithdrawalController extends BaseController {
     await prisma.organizationLunchWallet.update({
       where: { id: organizationBalance.id },
       data: {
-        balance: finalOrgLunchBalance < 0 ? "0" : String(finalOrgLunchBalance),
+        balance: finalOrgLunchBalance < 0 ? 0 : finalOrgLunchBalance,
       },
     });
 
@@ -72,7 +72,7 @@ class WithdrawalController extends BaseController {
         status: "success",
         amount,
         created_at: new Date().toISOString(),
-        id: shortId.generate(),
+        id: genRandomIntId(),
       },
     });
 

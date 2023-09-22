@@ -1,10 +1,10 @@
-const short = require("short-uuid");
 const BaseController = require("./base");
-const { passwordManager } = require("../helper/index");
+const { passwordManager, genRandomIntId } = require("../helper/index");
 const {
   StaffSignupSchema,
   organizationInvite,
   UpdateLunchPriceSchema,
+  OrganizationUpdateSchema,
 } = require("../helper/validate");
 const sendEmail = require("../helper/sendMail");
 const otpGenerator = require("otp-generator");
@@ -25,7 +25,7 @@ class OrganizationController extends BaseController {
 
     const { email, password, first_name, last_name, phone_number } = req.body;
     const hashedPassword = passwordManager.hash(password);
-    const id = short.generate();
+    const id = genRandomIntId();
     const formattedDate = new Date().toISOString();
 
     // check if staff exists for this organization
@@ -51,11 +51,11 @@ class OrganizationController extends BaseController {
         refresh_token: "",
         first_name,
         last_name,
-        profile_picture: `https://api.dicebear.com/7.x/micah/svg?seed=${first_name}`,
-        phonenumber: phone_number,
+        profile_pic: `https://api.dicebear.com/7.x/micah/svg?seed=${first_name}`,
+        phone: phone_number,
         updated_at: formattedDate,
         created_at: formattedDate,
-        isAdmin: false,
+        is_admin: false,
       },
     });
     this.success(res, "Staff member created successfully", 201, {
@@ -63,7 +63,7 @@ class OrganizationController extends BaseController {
       email: newStaff.email,
       first_name: newStaff.first_name,
       last_name: newStaff.last_name,
-      profile_picture: newStaff.profile_picture,
+      profile_pic: newStaff.profile_pic,
     });
   }
 
@@ -140,6 +140,9 @@ class OrganizationController extends BaseController {
         id: org_id,
         email,
         token: otp,
+        ttl: new Date(),
+        created_at: new Date(),
+        org_id: org_id,
       },
     });
 
@@ -168,7 +171,7 @@ class OrganizationController extends BaseController {
     const payload = req.body;
 
     //validating payload
-    const { error } = OrganizationSchema.validate(payload);
+    const { error } = OrganizationUpdateSchema.validate(payload);
     if (error) {
       return this.error(res, error.message, 400);
     }
@@ -182,11 +185,11 @@ class OrganizationController extends BaseController {
       },
       data: {
         name: organization_name,
-        lunch_price: String(lunch_price),
+        lunch_price: lunch_price,
       },
     });
 
-    this.success(res, "success", 200);
+    this.success(res, "Organization info updated successfully", 200);
   }
 }
 
