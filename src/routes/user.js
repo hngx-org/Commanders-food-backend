@@ -23,7 +23,7 @@ class UserRoute {
       )
     );
 
-    // Route to get all users
+    // Endpoint Route to get all users
     this.router.get(
       `${this.path}/all`,
       isAuthenticated,

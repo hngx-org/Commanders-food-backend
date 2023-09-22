@@ -1,7 +1,11 @@
 const short = require("short-uuid");
 const BaseController = require("./base");
 const { passwordManager } = require("../helper/index");
-const { StaffSignupSchema, organizationInvite } = require("../helper/validate");
+const {
+  StaffSignupSchema,
+  organizationInvite,
+  UpdateLunchPriceSchema,
+} = require("../helper/validate");
 const sendEmail = require("../helper/sendMail");
 const otpGenerator = require("otp-generator");
 const prisma = require("../config/prisma");
@@ -91,6 +95,24 @@ class OrganizationController extends BaseController {
     this.success(res, "Successfully topped-up lunch wallet", 200);
   }
 
+  async updateLunchPrice(req, res) {
+    const orgId = req.user.org_id;
+    const { error } = UpdateLunchPriceSchema.validate(req.body);
+
+    if (error) {
+      return this.error(res, error.message, 400);
+    }
+
+    const { lunch_price } = req.body;
+
+    await prisma.organization.update({
+      where: { id: orgId },
+      data: { lunch_price: String(lunch_price) },
+    });
+
+    return this.success(res, "Successfully updated", 201);
+  }
+
   async createOrganizationInvite(req, res) {
     const { error } = organizationInvite.validate(req.body);
 
@@ -139,6 +161,32 @@ class OrganizationController extends BaseController {
       200,
       process.env.NODE_ENV !== "production" && otp
     );
+  }
+
+  async updateOrganizationInfo(req, res) {
+    const { org_id } = req.user;
+    const payload = req.body;
+
+    //validating payload
+    const { error } = OrganizationSchema.validate(payload);
+    if (error) {
+      return this.error(res, error.message, 400);
+    }
+
+    const { organization_name, lunch_price } = payload;
+
+    //update to database
+    await prisma.organization.update({
+      where: {
+        id: org_id,
+      },
+      data: {
+        name: organization_name,
+        lunch_price: String(lunch_price),
+      },
+    });
+
+    this.success(res, "success", 200);
   }
 }
 

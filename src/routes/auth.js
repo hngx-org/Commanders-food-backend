@@ -5,7 +5,7 @@ class AuthRoute {
   router = express.Router();
   authController = new AuthController();
 
-  path = '/auth';
+  path = "/auth";
 
   constructor() {
     this.initializeRoutes();
@@ -22,6 +22,6 @@ class AuthRoute {
       useCatchErrors(this.authController.login.bind(this.authController))
     );
   }
-  };
+}
 
 module.exports = AuthRoute;
