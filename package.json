@@ -28,10 +28,11 @@
     "short-uuid": "^4.2.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "winston": "^3.8.2",
+    "dotenv": "^16.0.3",
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "dotenv": "^16.0.3",
     "nodemon": "^3.0.1",
     "prisma": "^4.12.0"
   },
