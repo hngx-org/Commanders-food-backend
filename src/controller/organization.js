@@ -174,6 +174,6 @@ class OrganizationController extends BaseController {
     );
   }
 }
-}
+
 
 module.exports = OrganizationController;
