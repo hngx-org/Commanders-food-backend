@@ -2,6 +2,7 @@ const BaseController = require("./base");
 const prisma = require("../config/prisma");
 const shortId = require("short-uuid");
 const { SendLunchSchema } = require("../helper/validate");
+const { genRandomIntId } = require("../helper");
 
 class LunchController extends BaseController {
   constructor() {
@@ -35,7 +36,7 @@ class LunchController extends BaseController {
   async getAllLunch(req, res) {
     const lunches = await prisma.lunch.findMany({
       where: {
-        receiverId: req.user.user_id, //test value waiting for id from auth
+        receiver_id: req.user.user_id, //test value waiting for id from auth
       },
     });
 
@@ -100,13 +101,13 @@ class LunchController extends BaseController {
     for (let receiver of receivers) {
       await prisma.lunch.create({
         data: {
-          senderId: user_id,
-          receiverId: receiver,
+          sender_id: user_id,
+          receiver_id: receiver,
           quantity,
           redeemed: false,
           note,
           org_id,
-          id: shortId.generate(),
+          id: genRandomIntId(),
           created_at: new Date(),
         },
       });

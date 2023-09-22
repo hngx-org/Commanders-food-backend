@@ -7,7 +7,7 @@ dotenv.config();
 
 function genRandomIntId(len = 8) {
   let id = "";
-  const char = "0123456789".split("");
+  const char = "123456789".split("");
   for (let i = 0; i < len; i++) {
     const rand = Math.floor(Math.random() * char.length);
     id += char[rand];

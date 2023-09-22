@@ -70,18 +70,7 @@ class UserController extends BaseController {
 
     const users = await prisma.user.findMany({
       where: {
-        OR: [
-          {
-            email: {
-              contains: query,
-            },
-          },
-          {
-            first_name: {
-              contains: query,
-            },
-          },
-        ],
+        OR: [{ email: query }, { first_name: query }, { last_name: query }],
       },
       include: { organization: true },
     });
@@ -105,7 +94,6 @@ class UserController extends BaseController {
   // redeem user lunch
   async redeemLunch(req, res) {
     const { ids } = req.body;
-    const userId = req.user.user_id;
 
     if (!ids || ids.length === 0) {
       return this.error(res, "No ids provided", 400);
@@ -133,7 +121,7 @@ class UserController extends BaseController {
 
         const user = await prisma.user.findUnique({
           where: {
-            id: lunch.receiverId,
+            id: lunch.receiver_id,
           },
         });
 
@@ -150,15 +138,15 @@ class UserController extends BaseController {
           });
 
           // update user
+          const lunchCreditBalance =
+            user.lunch_credit_balance +
+            lunch.quantity * organisation.lunch_price;
           await prisma.user.update({
             where: {
-              id: lunch.receiverId,
+              id: lunch.receiver_id,
             },
             data: {
-              lunch_credit_balance: String(
-                Number(user.lunch_credit_balance) +
-                  Number(lunch.quantity) * Number(organisation.lunch_price)
-              ),
+              lunch_credit_balance: lunchCreditBalance,
             },
           });
         }

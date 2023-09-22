@@ -1,10 +1,10 @@
-const short = require("short-uuid");
 const BaseController = require("./base");
 const { passwordManager, genRandomIntId } = require("../helper/index");
 const {
   StaffSignupSchema,
   organizationInvite,
   UpdateLunchPriceSchema,
+  OrganizationUpdateSchema,
 } = require("../helper/validate");
 const sendEmail = require("../helper/sendMail");
 const otpGenerator = require("otp-generator");
@@ -171,7 +171,7 @@ class OrganizationController extends BaseController {
     const payload = req.body;
 
     //validating payload
-    const { error } = OrganizationSchema.validate(payload);
+    const { error } = OrganizationUpdateSchema.validate(payload);
     if (error) {
       return this.error(res, error.message, 400);
     }
@@ -185,11 +185,11 @@ class OrganizationController extends BaseController {
       },
       data: {
         name: organization_name,
-        lunch_price: String(lunch_price),
+        lunch_price: lunch_price,
       },
     });
 
-    this.success(res, "success", 200);
+    this.success(res, "Organization info updated successfully", 200);
   }
 }
 

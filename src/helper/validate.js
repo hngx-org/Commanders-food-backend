@@ -34,7 +34,7 @@ const WithdrawalRequestSchema = Joi.object({
 });
 
 const SendLunchSchema = Joi.object({
-  receivers: Joi.array().items(Joi.string()),
+  receivers: Joi.array().items(Joi.number()),
   quantity: Joi.number().required(),
   note: Joi.string().required(),
 });
@@ -50,6 +50,11 @@ const saveBankInfoShema = Joi.object({
   bank_region: Joi.string().required(),
 });
 
+const OrganizationUpdateSchema = Joi.object({
+  organization_name: Joi.string().required(),
+  lunch_price: Joi.number().required(),
+});
+
 module.exports = {
   UserSignupSchema,
   LoginSchema,
@@ -59,4 +64,5 @@ module.exports = {
   SendLunchSchema,
   UpdateLunchPriceSchema,
   saveBankInfoShema,
+  OrganizationUpdateSchema,
 };

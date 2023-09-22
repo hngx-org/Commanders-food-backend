@@ -55,7 +55,7 @@ class OrganizationRoute {
       )
     );
 
-    //test endpoints
+    // update organization info.
     this.router.put(
       `${this.path}/create`,
       isAuthenticated,
