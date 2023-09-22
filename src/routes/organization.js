@@ -18,7 +18,7 @@ class OrganizationRoute {
       `${this.path}/create`,
       isAuthenticated,
       isAdmin,
-      useCatchErrors(this.organizationController.updateOrganization.bind(this.organizationController))
+      useCatchErrors(this.organizationController.updateOrganizationInfo.bind(this.organizationController))
     );
   }
 }
