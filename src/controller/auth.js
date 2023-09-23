@@ -36,7 +36,7 @@ class AuthController extends BaseController {
     const org_id = genRandomIntId();
     const defaultCurrency = "NGN";
 
-    // resaon of generating this, is the auth_token would be used later when
+    // reason of generating this, is the auth_token would be used later when
     // updating organization info
     const refreshToken = JwtTokenManager.genRefreshToken({
       user_id,
@@ -122,7 +122,7 @@ class AuthController extends BaseController {
 
     const { id, org_id, first_name, last_name, isAdmin } = userExists;
 
-    // resaon of generating this, is the auth_token would be used later when
+    // reason of generating this, is the auth_token would be used later when
     // updating organization info
     const refreshToken = JwtTokenManager.genRefreshToken({
       user_id: id,

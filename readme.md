@@ -46,16 +46,24 @@ Visit `http://localhost:8080/api/user/data` in your browser just to confirm rout
 Create a .env file inside the root of your application and include the following content:
 
 ```bash
-DATABASE_URL='mysql://root:@localhost:<add_your_port || 3306>/free-lunch'
+DATABASE_URL="mysql://root:@localhost:<add_your_port || 3306>/free-lunch"
 
 NODE_ENV="development"
 
 JWT_SECRET="sdcsdcdc32ry38y9dpnp23i3892te832tp9e23on"
+
+SMTP_USER = "<User email address>"
+
+SMTP_PASSWORD = <User SMTP Password>
+
+SMTP_HOST = smtp.elasticemail.com
+
+SMTP_PORT = 2525
 ```
 
 > Note!! you need to create the database `free-lunch` yourself before doing any other thing within the app if you need it to work properly. You could use tool like `PhpMyAdmin` or `MysqlWorkBench`
 
-# Routes
+## Routes
 
 The routes can be found within the `/routes` directory. for eg the user route would handle routing that has to do with the user controllers which is prefix with `/user/*` and when been invoked, would be done in this format `/api/user/*`
 
@@ -88,12 +96,12 @@ Also, within each controller file, notice that `try...catch` isn't been used, th
 
 > `Do Not Touch the Base file within the controller directory. It should only be inherited from.`
 
-# Commit Standards
+## Commit Standards
 
 ## Branches
 
 - **dev** -> pr this branch for everything `frontend` & `backend` related
-- **main** -> **dont touch** this branch, this is what is running in production.
+- **main** -> **don't touch** this branch, this is what is running in production.
 
 ## Contributions
 

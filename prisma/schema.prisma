@@ -80,9 +80,9 @@ model OrganizationInvite {
     id         Int      @id @default(autoincrement()) @map(name: "id")
     email      String?
     token      String
-    ttl        DateTime @default(now()) @map(name: "ttl") @db.DateTime()
+    ttl        DateTime? @default(now()) @map(name: "ttl")
     org_id     Int      @map(name: "org_id")
-    created_at DateTime @default(now()) @db.DateTime()
+    created_at DateTime? @default(now())
 
     @@map(name: "organization_invites")
 }
