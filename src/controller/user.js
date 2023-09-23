@@ -1,8 +1,14 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const BaseController = require("./base");
-const { saveBankInfoShema,passwordResetSchema } = require("../helper/validate");
-const { lunch } = require("../config/prisma");
+const {
+  saveBankInfoShema,
+  passwordResetSchema,
+  ForgotPasswordSchema,
+} = require("../helper/validate");
+const sendEmail = require("../helper/sendMail");
+const otpGenerator = require("otp-generator");
+const { passwordManager } = require("../helper");
 
 class UserController extends BaseController {
   constructor() {
@@ -207,6 +213,119 @@ class UserController extends BaseController {
     });
   }
 
+  async passwordReset(req, res) {
+    const payload = req.body;
+
+    const { error } = passwordResetSchema.validate(payload);
+    if (error) {
+      return this.error(res, error.message, 400);
+    }
+
+    const { new_password, otp_code } = payload;
+
+    // verify otp_code
+    const otpCodeInvite = await prisma.organizationInvite.findFirst({
+      where: {
+        token: otp_code,
+        ttl: {
+          gte: new Date(), // check if the expiration is Greater than or equal to current time
+        },
+      },
+      select: { org_id: true, email: true, id: true },
+    });
+
+    if (!otpCodeInvite) {
+      return this.error(res, "Invalid OTP code", 422);
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        AND: {
+          email: otpCodeInvite.email,
+          org_id: otpCodeInvite.org_id,
+        },
+      },
+    });
+
+    if (user === null) {
+      return this.error(res, "Invalid OTP code, user don't exist", 422);
+    }
+
+    const hashedPasswword = passwordManager.hash(new_password);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password_hash: hashedPasswword },
+    });
+    // delete otp code
+    await prisma.organizationInvite.delete({
+      where: {
+        id: otpCodeInvite.id,
+      },
+    });
+
+    this.success(res, "Password reset successfully", 200);
+  }
+
+  async forgotPassword(req, res) {
+    const { error } = ForgotPasswordSchema.validate(req.body);
+    if (error) {
+      return this.error(res, error.message, 400);
+    }
+
+    const { email } = req.body;
+    const user = await prisma.user.findFirst({ where: { email } });
+    if (user === null) {
+      return this.error(res, "User not found", 404);
+    }
+
+    // send password reset email
+    const now = new Date();
+    const fifteenMinutesLater = new Date(now.getTime() + 15 * 60 * 1000);
+    const otpCode = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+      lowerCaseAlphabets: false,
+    });
+    const PasswordResetMail = `
+    Password Reset - OTP Confirmation
+
+    Dear ${user.first_name + " " + user.last_name},
+
+    You are receiving this email because a request to reset your password has been initiated. Please use the OTP (One-Time Password) below to confirm your password reset:
+
+    <div style="background-color: #f0f0f0; padding: 15px; text-align: center; border-radius: 5px;">
+        <h3>One-Time Password (OTP)</h3>
+        <p style="font-size: 24px; font-weight: bold; color: #0070b7;">${otpCode}</p>
+        <p style="font-size: 14px; color: #777;">This OTP is valid for the next 15 minutes. Please do not share it with anyone.</p>
+    </div>
+
+    If you didn't initiate this password reset request, please ignore this email. Your account remains secure.
+
+    Note: This OTP is valid for 15 minutes only.
+    `;
+
+    await prisma.organizationInvite.create({
+      data: {
+        email,
+        token: otpCode,
+        ttl: fifteenMinutesLater,
+        org_id: user?.org_id,
+      },
+    });
+
+    await sendEmail({
+      subject: "Password Reset",
+      to: email,
+      text: PasswordResetMail,
+    });
+
+    this.success(
+      res,
+      "Forgot password OTP sent",
+      201,
+      process.env.NODE_ENV !== "production" && otpCode
+    );
+  }
 }
 
 module.exports = UserController;
