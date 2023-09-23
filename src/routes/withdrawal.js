@@ -1,6 +1,6 @@
 const express = require("express");
 const useCatchErrors = require("../error/catchErrors");
-const { isAuthenticated } = require("../middlewares/auth");
+const { isAuthenticated, isAdmin } = require("../middlewares/auth");
 const WithdrawalController = require("../controller/withdrawal");
 
 class WithdrawalRoute {
@@ -22,6 +22,15 @@ class WithdrawalRoute {
         this.withdrawalController.requestWithdrawal.bind(
           this.withdrawalController
         )
+      )
+    );
+
+    this.router.get(
+      `${this.path}/all`,
+      isAuthenticated,
+      isAdmin,
+      useCatchErrors(
+        this.withdrawalController.allWithdrawals.bind(this.withdrawalController)
       )
     );
   }

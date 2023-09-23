@@ -55,6 +55,15 @@ const OrganizationUpdateSchema = Joi.object({
   lunch_price: Joi.number().required(),
 });
 
+const passwordResetSchema = Joi.object({
+  new_password: Joi.string().min(6).required(),
+  otp_code: Joi.string().required(),
+});
+
+const ForgotPasswordSchema = Joi.object({
+  email: Joi.string().required(),
+});
+
 module.exports = {
   UserSignupSchema,
   LoginSchema,
@@ -65,4 +74,6 @@ module.exports = {
   UpdateLunchPriceSchema,
   saveBankInfoShema,
   OrganizationUpdateSchema,
+  passwordResetSchema,
+  ForgotPasswordSchema,
 };

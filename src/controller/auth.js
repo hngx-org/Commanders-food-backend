@@ -1,13 +1,15 @@
 const prisma = require("../config/prisma");
 const {
-  randomId,
   passwordManager,
   JwtTokenManager,
   genRandomIntId,
 } = require("../helper");
-const { UserSignupSchema, LoginSchema } = require("../helper/validate");
+const {
+  UserSignupSchema,
+  LoginSchema,
+  passwordResetSchema,
+} = require("../helper/validate");
 const BaseController = require("./base");
-const shortId = require("short-uuid");
 
 class AuthController extends BaseController {
   constructor() {
@@ -39,10 +41,6 @@ class AuthController extends BaseController {
     // resaon of generating this, is the auth_token would be used later when
     // updating organization info
     const refreshToken = JwtTokenManager.genRefreshToken({
-      user_id,
-      org_id,
-    });
-    const accessToken = JwtTokenManager.genRefreshToken({
       user_id,
       org_id,
     });
@@ -88,12 +86,7 @@ class AuthController extends BaseController {
       createOrgWallet,
     ]);
 
-    this.success(res, "successfully", 200, {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      id: user_id,
-      name: `${first_name} ${last_name}`,
-    });
+    this.success(res, "Successfully created user", 200);
   }
 
   async login(req, res) {
@@ -120,7 +113,7 @@ class AuthController extends BaseController {
       return;
     }
 
-    const { id, org_id, first_name, last_name, isAdmin } = userExists;
+    const { id, org_id, first_name, last_name, is_admin } = userExists;
 
     // resaon of generating this, is the auth_token would be used later when
     // updating organization info
@@ -147,7 +140,7 @@ class AuthController extends BaseController {
       refresh_token: refreshToken,
       id,
       name: `${first_name} ${last_name}`,
-      isAdmin,
+      is_admin,
     });
   }
 }

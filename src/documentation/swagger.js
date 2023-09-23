@@ -9,7 +9,8 @@ paths:
   /api/auth/user/signup:
     post:
       summary: Creates a user.
-      
+      tags:
+        - Authentication
       description: Endpoint for user signup. 
       requestBody:
           required: true
@@ -50,7 +51,8 @@ paths:
   /api/auth/login:
     post:
       summary: Logs in a user.
-      
+      tags:
+        - Authentication
       description: Endpoint for user login. 
       requestBody:
           required: true
@@ -76,11 +78,10 @@ paths:
   /api/user/profile:
     get:
       summary: Fetches a user profile.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - User
+      security:
+        - BearerAuth: []
       description: Endpoint to fetch a user profile. 
       requestBody:
           required: true
@@ -99,16 +100,104 @@ paths:
           description: Bad request (e.g., validation error)
         '500':
           description: Internal server error
-        
-  
+
+
+  /api/user/forgot-password:
+    post:
+      summary: Forgot password.
+      tags:
+        - User
+      description: Endpoint for forgot password.
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: ben@mail.com
+      responses:
+        '200':    # status code
+          description: successful
+        '400':
+          description: Bad request (e.g., validation error)
+        '500':
+          description: Internal server error
+
+  /api/user/reset-password:
+    post:
+      summary: Reset password.
+      tags:
+        - User
+      description: Endpoint for resetting password.
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new_password:
+                    type: string
+                    example: 123456
+                  otp_code:
+                    type: string
+                    example: 445667
+      responses:
+        '200':    # status code
+          description: successful
+        '400':
+          description: Bad request (e.g., validation error)
+        '500':
+          description: Internal server error
+
+  /api/user/bank:
+    patch:
+      summary: adds a user's bank to profile.
+      tags:
+        - User
+      security:
+        - BearerAuth: []
+      description: Endpoint to add a user's bank to profile. 
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  
+                  bank_name:
+                    type: string
+                    example: bank
+                  bank_number:
+                    type: string
+                    example: 10023456789
+                  bank_code:
+                    type: string
+                    example: 123456
+                  bank_region:
+                    type: string
+                    example: Nigeria
+                  
+      responses:
+        '200':    # status code
+          description: successful
+        '400':
+          description: Bad request (e.g., validation error)
+        '401':
+          description: Unauthorised (e.g., Bad Token)
+        '500':
+          description: Internal server error
   /api/user/all:
     get:
       summary: Fetches all users.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - User
+      security:
+        - BearerAuth: []
       description: Endpoint for user signup. 
       requestBody:
           required: false
@@ -123,11 +212,10 @@ paths:
   /api/user/search/<nameoremail>:
     get:
       summary: Search a user by name or email.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - User
+      security:
+        - BearerAuth: []
       description: Endpoint for user signup. 
       requestBody:
           required: true
@@ -150,11 +238,10 @@ paths:
   /api/user/redeem:
     post:
       summary: Redeems a user lunch.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - User
+      security:
+        - BearerAuth: []
       description: Allows a user to add launch credit to launch credit balance. A token must be redeemed before it can be withdrawn 
       requestBody:
           required: true
@@ -177,11 +264,10 @@ paths:
   /api/lunch/send:
     post:
       description: Create a new lunch request.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - Lunch
+      security:
+        - BearerAuth: []
           schema:
             type: string
             format: token
@@ -210,11 +296,10 @@ paths:
   /api/lunch/all:
     get:
       description: Get all Lunches.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - Lunch
+      security:
+        - BearerAuth: []
           schema:
             type: string
             format: token
@@ -224,14 +309,13 @@ paths:
         '201':
          description: Lunch data fetched successfuly
         
-  /api/lunch/:user_id:
+  /api/lunch/:id:
     get:
      description: Gets a specific lunch.
-     parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+     tags:
+        - Lunch
+     security:
+        - BearerAuth: []
           schema:
             type: string
             format: token
@@ -246,11 +330,10 @@ paths:
   /api/organization/create:
     put:
       description: Allows an admin user to create and update the organization name and lunch price 
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - Organization
+      security:
+        - BearerAuth: []
           schema:
             type: string
             format: token
@@ -283,11 +366,10 @@ paths:
   /api/organization/invite:
     post:
       description: Allows an admin user to send an invitation to join the organization.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - Organization
+      security:
+        - BearerAuth: []
           schema:
             type: string
             format: token
@@ -316,6 +398,8 @@ paths:
   /api/organization/staff/signup:
     post:
       description: An  OTP code would be sent to user email, the token sent would be used within the otp_token field
+      tags:
+        - Authentication
       requestBody:
           required: true
           content:
@@ -354,11 +438,10 @@ paths:
   /api/organization/wallet/update:
     patch:
       description: Allows an admin user to update wallet balance.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - Organization
+      security:
+        - BearerAuth: []
           schema:
             type: string
             format: token
@@ -388,11 +471,10 @@ paths:
   /api/organization/launch/update:
     patch:
       description: Allows an admin user to update launch balance.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - Organization
+      security:
+        - BearerAuth: []
           schema:
             type: string
             format: token
@@ -422,11 +504,10 @@ paths:
   /api/withdrawal/request:
     post:
       description: Allows an admin user to update launch balance.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
+      tags:
+        - Withdrawal
+      security:
+        - BearerAuth: []
           schema:
             type: string
             format: token
@@ -487,8 +568,31 @@ paths:
           description: Bad request. Invalid input.
         '401':
           description: Unauthorised (e.g., Bad Token)
+
+  /api/withdrawal/all:
+    get:
+      description: Fetched all organizations staff withdrawals.
+      tags:
+        - Withdrawal
+      security:
+        - BearerAuth: []
+      responses:
+        '201':
+          description: Withdrawal fetched successfuly.
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request. Invalid input.
+        '401':
+          description: Unauthorised (e.g., Bad Token)
         
                     
-    
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
 `;
 module.exports = swagger;

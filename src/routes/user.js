@@ -50,6 +50,20 @@ class UserRoute {
       isAuthenticated,
       useCatchErrors(this.userController.saveBankInfo.bind(this.userController))
     );
+
+    this.router.post(
+      `${this.path}/reset-password`,
+      useCatchErrors(
+        this.userController.passwordReset.bind(this.userController)
+      )
+    );
+
+    this.router.post(
+      `${this.path}/forgot-password`,
+      useCatchErrors(
+        this.userController.forgotPassword.bind(this.userController)
+      )
+    );
   }
 }
 

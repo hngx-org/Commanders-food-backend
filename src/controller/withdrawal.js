@@ -69,7 +69,7 @@ class WithdrawalController extends BaseController {
     await prisma.withdrawal.create({
       data: {
         user_id,
-        status: "success",
+        status: "pending",
         amount,
         created_at: new Date().toISOString(),
         id: genRandomIntId(),
@@ -78,6 +78,53 @@ class WithdrawalController extends BaseController {
 
     // send response
     this.success(res, "Withdrawal request created successfully", 200);
+  }
+
+  async allWithdrawals(req, res) {
+    const { user_id, org_id } = req.user;
+
+    const allWithdrawals = await prisma.withdrawal.findMany({
+      include: { user: true },
+    });
+
+    const orgUserWithdrawals = [];
+    for (const withdraw of allWithdrawals) {
+      const userOrg = await prisma.user.findFirst({
+        where: {
+          AND: {
+            id: withdraw?.user_id,
+            org_id,
+          },
+        },
+        include: { organization: true },
+      });
+      if (userOrg) {
+        orgUserWithdrawals.push({
+          id: withdraw.id,
+          status: withdraw.status,
+          amount: withdraw.amount,
+          created_at: withdraw.created_at,
+          user: {
+            id: withdraw.user.id,
+            first_name: withdraw.user.first_name,
+            last_name: withdraw.user.last_name,
+            email: withdraw.user.email,
+          },
+          organization: {
+            name: userOrg.organization.name,
+            id: userOrg.organization.id,
+            lunch_price: userOrg.organization.lunch_price,
+          },
+        });
+      }
+    }
+
+    this.success(
+      res,
+      "withdrawals fetched successfully",
+      200,
+      orgUserWithdrawals
+    );
   }
 }
 
