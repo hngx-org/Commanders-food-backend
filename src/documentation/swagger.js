@@ -209,7 +209,7 @@ paths:
         '500':
           description: Internal server error
         
-  /api/user/search/<nameoremail>:
+  /api/user/search/{query}:
     get:
       summary: Search a user by name or email.
       tags:
@@ -217,16 +217,13 @@ paths:
       security:
         - BearerAuth: []
       description: Endpoint for user signup. 
-      requestBody:
+      parameters:
+        - name: query
+          in: path
+          description: User first or last name or email
           required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  email:
-                    type: string
-                    example: aduak@yahoo.com
+          schema:
+            type: string
       responses:
         '200':    # status code
           description: User fetched
@@ -309,7 +306,7 @@ paths:
         '201':
          description: Lunch data fetched successfuly
         
-  /api/lunch/:id:
+  /api/lunch/{id}:
     get:
      description: Gets a specific lunch.
      tags:
@@ -319,6 +316,13 @@ paths:
           schema:
             type: string
             format: token
+     parameters:
+        - name: id
+          in: path
+          description: Lunch id
+          required: true
+          schema:
+            type: number
      
      responses:
       '201':

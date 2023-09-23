@@ -11,25 +11,29 @@ class LunchController extends BaseController {
 
   async getLunch(req, res) {
     const lunchId = req.params.id;
-    const lunch = await prisma.lunch.findUnique({ where: { id: lunchId } });
+    const lunch = await prisma.lunch.findFirst({
+      where: {
+        AND: {
+          id: +lunchId,
+          org_id: req?.user?.org_id,
+        },
+      },
+    });
 
     if (!lunch) {
-      const errorData = {
-        message: `Lunch with id ${lunchId} does not exist`,
-      };
-      this.error(res, "Lunch Not Found", 404, errorData);
+      this.error(res, "Lunch Not Found", 404);
     } else {
       const lunchData = {
-        receiverId: lunch.receiverId,
-        senderId: lunch.senderId,
+        receiverId: lunch.receiver_id,
+        senderId: lunch.sender_id,
         quantity: lunch.quantity,
         redeemed: lunch.redeemed,
         note: lunch.note,
         created_at: "",
-        id: "",
+        id: req.params?.id,
       };
 
-      this.success(res, "Lunch request created successfully", 200, lunchData);
+      this.success(res, "Lunch request created successfully", 200, lunch);
     }
   }
 

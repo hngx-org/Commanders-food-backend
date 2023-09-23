@@ -109,6 +109,7 @@ class WithdrawalController extends BaseController {
             first_name: withdraw.user.first_name,
             last_name: withdraw.user.last_name,
             email: withdraw.user.email,
+            profile_pic: withdraw.user.profile_pic,
           },
           organization: {
             name: userOrg.organization.name,
