@@ -161,7 +161,6 @@ class AuthController extends BaseController {
     }
 
     const { email, password } = payload;
-    console.log(email,password)
 
     const user = await prisma.user.findUnique({
       where: { email: email },
