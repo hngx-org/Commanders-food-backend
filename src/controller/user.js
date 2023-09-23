@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const BaseController = require("./base");
-const { saveBankInfoShema } = require("../helper/validate");
+const { saveBankInfoShema,passwordResetSchema } = require("../helper/validate");
 const { lunch } = require("../config/prisma");
 
 class UserController extends BaseController {
@@ -206,6 +206,7 @@ class UserController extends BaseController {
       bank_region,
     });
   }
+
 }
 
 module.exports = UserController;

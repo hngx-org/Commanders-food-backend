@@ -5,8 +5,8 @@ generator client {
 datasource db {
     provider          = "mysql"
     url               = env("DATABASE_URL")
-    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-    relationMode      = "prisma"
+    // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+    // relationMode      = "prisma"
 }
 
 // schema.prisma
