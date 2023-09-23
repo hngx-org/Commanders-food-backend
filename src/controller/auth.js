@@ -5,7 +5,7 @@ const {
   JwtTokenManager,
   genRandomIntId,
 } = require("../helper");
-const { UserSignupSchema, LoginSchema } = require("../helper/validate");
+const { UserSignupSchema, LoginSchema,passwordResetSchema } = require("../helper/validate");
 const BaseController = require("./base");
 const shortId = require("short-uuid");
 
@@ -149,6 +149,39 @@ class AuthController extends BaseController {
       name: `${first_name} ${last_name}`,
       isAdmin,
     });
+  }
+
+  async passwordReset(req, res) {
+    const payload = req.body;
+    
+
+    const { error } = passwordResetSchema.validate(payload);
+    if (error) {
+      return this.error(res, error.message, 400);
+    }
+
+    const { email, password } = payload;
+    console.log(email,password)
+
+    const user = await prisma.user.findUnique({
+      where: { email: email },
+    });
+    const errorData = {
+      message: `User with id ${user.email} does not exist`,
+    };
+    if (!user) this.error(res, "User not found", 404, errorData);
+    const hashedPasswword = passwordManager.hash(password);
+
+    const updatedPassword = await prisma.user.update({
+      where: { id: user.id },
+      data: { password_hash: hashedPasswword },
+    });
+    this.success(
+      res,
+      "passwords updated successfully",
+      200,
+      'Password reset successfully, Kindly login.'
+    );
   }
 }
 
