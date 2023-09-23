@@ -100,7 +100,45 @@ paths:
         '500':
           description: Internal server error
         
-  
+  /api/user/bank:
+    get:
+      summary: adds a user's bank to profile.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+      description: Endpoint to add a user's bank to profile. 
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  
+                  bank_name:
+                    type: string
+                    example: bank
+                  bank_number:
+                    type: string
+                    example: 10023456789
+                  bank_code:
+                    type: string
+                    example: 123456
+                  bank_region:
+                    type: string
+                    example: Nigeria
+                  
+      responses:
+        '200':    # status code
+          description: successful
+        '400':
+          description: Bad request (e.g., validation error)
+        '401':
+          description: Unauthorised (e.g., Bad Token)
+        '500':
+          description: Internal server error
   /api/user/all:
     get:
       summary: Fetches all users.
@@ -224,7 +262,7 @@ paths:
         '201':
          description: Lunch data fetched successfuly
         
-  /api/lunch/:user_id:
+  /api/lunch/:id:
     get:
      description: Gets a specific lunch.
      parameters:
