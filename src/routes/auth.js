@@ -21,12 +21,6 @@ class AuthRoute {
       `${this.path}/login`,
       useCatchErrors(this.authController.login.bind(this.authController))
     );
-    this.router.patch(
-      `${this.path}/resetpassword`,
-      useCatchErrors(
-        this.authController.passwordReset.bind(this.authController)
-      )
-    );
   }
 }
 
