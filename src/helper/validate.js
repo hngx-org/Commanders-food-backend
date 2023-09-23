@@ -56,8 +56,12 @@ const OrganizationUpdateSchema = Joi.object({
 });
 
 const passwordResetSchema = Joi.object({
+  new_password: Joi.string().min(6).required(),
+  otp_code: Joi.string().required(),
+});
+
+const ForgotPasswordSchema = Joi.object({
   email: Joi.string().required(),
-  password: Joi.string().min(6).required(),
 });
 
 module.exports = {
@@ -71,4 +75,5 @@ module.exports = {
   saveBankInfoShema,
   OrganizationUpdateSchema,
   passwordResetSchema,
+  ForgotPasswordSchema,
 };
