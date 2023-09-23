@@ -101,7 +101,7 @@ paths:
           description: Internal server error
         
   /api/user/bank:
-    get:
+    patch:
       summary: adds a user's bank to profile.
       parameters:
         - name: Authorization
