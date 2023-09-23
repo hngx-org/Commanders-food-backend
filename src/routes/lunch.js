@@ -1,12 +1,12 @@
-const express = require('express');
-const LunchController = require('../controller/lunch');
-const useCatchErrors = require('../error/catchErrors');
-const { isAuthenticated } = require('../middlewares/auth');
+const express = require("express");
+const LunchController = require("../controller/lunch");
+const useCatchErrors = require("../error/catchErrors");
+const { isAuthenticated } = require("../middlewares/auth");
 
 class LunchRoute {
   router = express.Router();
   lunchController = new LunchController();
-  path = '/lunch';
+  path = "/lunch";
 
   constructor() {
     this.initializeRoutes();
@@ -24,6 +24,11 @@ class LunchRoute {
       `${this.path}/send`,
       isAuthenticated,
       useCatchErrors(this.lunchController.sendLunch.bind(this.lunchController))
+    );
+    this.router.get(
+      `${this.path}/:id`,
+      isAuthenticated,
+      useCatchErrors(this.lunchController.getLunch.bind(this.lunchController))
     );
   }
 }
