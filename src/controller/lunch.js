@@ -40,7 +40,30 @@ class LunchController extends BaseController {
   async getAllLunch(req, res) {
     const lunches = await prisma.lunch.findMany({
       where: {
-        receiver_id: req.user.user_id, //test value waiting for id from auth
+        OR: [
+          {
+            receiver_id: req.user.user_id,
+          },
+          { sender_id: req.user.user_id },
+        ],
+      },
+      include: {
+        sender: {
+          select: {
+            email: true,
+            first_name: true,
+            last_name: true,
+            profile_pic: true,
+          },
+        },
+        receiver: {
+          select: {
+            email: true,
+            first_name: true,
+            last_name: true,
+            profile_pic: true,
+          },
+        },
       },
     });
 
