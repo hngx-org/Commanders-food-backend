@@ -67,8 +67,6 @@ class LunchController extends BaseController {
       },
     });
 
-    console.log(lunches);
-
     if (lunches.length == 0) {
       return this.success(
         res,
