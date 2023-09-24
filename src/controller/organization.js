@@ -58,6 +58,12 @@ class OrganizationController extends BaseController {
         is_admin: false,
       },
     });
+
+    // delete token from db
+    await prisma.organizationInvite.deleteMany({
+      where: { email },
+    });
+
     this.success(res, "Staff member created successfully", 201, {
       id: newStaff.id,
       email: newStaff.email,
