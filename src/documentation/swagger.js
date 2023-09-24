@@ -82,17 +82,7 @@ paths:
         - User
       security:
         - BearerAuth: []
-      description: Endpoint to fetch a user profile. 
-      requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  user_id:
-                    type: string
-                    example: user_id
+      description: Endpoint to fetch a user profile.
       responses:
         '200':    # status code
           description: successful
