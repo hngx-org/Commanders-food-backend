@@ -277,9 +277,11 @@ paths:
              type: object
              properties:
               receivers:
-                type: string
-                example: user_id
-              quantities:
+                type: array
+                items:
+                  type: number
+                  example: 466
+              quantity:
                 type: number
                 example: 5
               note:
