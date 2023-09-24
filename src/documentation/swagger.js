@@ -237,9 +237,11 @@ paths:
               schema:
                 type: object
                 properties:
-                  user_id:
-                    type: string
-                    example: user_id
+                  ids:
+                    type: array
+                    items:
+                      type: number
+                      example: 12122523
       responses:
         '200':    # status code
           description: success
