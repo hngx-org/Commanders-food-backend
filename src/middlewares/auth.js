@@ -65,7 +65,7 @@ async function verifyOTP(req, res, next) {
   // check if otp exists
   try {
     const otpExists = await prisma.organizationInvite.findFirst({
-      where: { token: OTP },
+      where: { token: String(OTP) },
     });
 
     if (otpExists === null) {
