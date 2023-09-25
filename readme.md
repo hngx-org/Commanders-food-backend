@@ -127,7 +127,7 @@ Free Lunch is open to contributions, but I recommend creating an issue or replyi
 | build    | Builds                   | Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)         |
 | ci       | Continuous Integrations  | Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs) |
 | chore    | Chores                   | Other changes that don't modify backend, frontend or test files                                             |
-| revert   | Reverts                  | Reverts a previous commit                                                                                   |
+| revert   | Reverts                  | Reverts a previous commit.                                                                                   |
 
 > _Sample Commit Messages_
 
