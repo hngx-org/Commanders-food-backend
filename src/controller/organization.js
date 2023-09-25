@@ -143,7 +143,7 @@ class OrganizationController extends BaseController {
     // store token in database
     await prisma.organizationInvite.create({
       data: {
-        id: org_id,
+        id: genRandomIntId(),
         email,
         token: otp,
         ttl: new Date(),

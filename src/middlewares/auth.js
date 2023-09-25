@@ -72,7 +72,7 @@ async function verifyOTP(req, res, next) {
       return res.status(404).json({ message: "Invalid OTP code." });
     }
 
-    req.user = { org_id: otpExists?.id };
+    req.user = { org_id: otpExists?.org_id };
     next();
   } catch (e) {
     logger.error(`Invalid OTP code: ${e.message}`);
