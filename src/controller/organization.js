@@ -140,17 +140,32 @@ class OrganizationController extends BaseController {
       lowerCaseAlphabets: false,
     });
 
-    // store token in database
-    await prisma.organizationInvite.create({
-      data: {
-        id: genRandomIntId(),
-        email,
-        token: otp,
-        ttl: new Date(),
-        created_at: new Date(),
-        org_id: org_id,
-      },
+    // check if token exists
+    const otpExists = await prisma.organizationInvite.findFirst({
+      where: { email },
     });
+
+    if (otpExists !== null) {
+      // update otp
+      await prisma.organizationInvite.update({
+        where: {
+          id: otpExists?.id,
+        },
+        data: { token: otp, ttl: new Date() },
+      });
+    } else {
+      // store token in database
+      await prisma.organizationInvite.create({
+        data: {
+          id: genRandomIntId(),
+          email,
+          token: otp,
+          ttl: new Date(),
+          created_at: new Date(),
+          org_id: org_id,
+        },
+      });
+    }
 
     const subject = "Invitation to Join Free Lunch Organization";
     const body = `
