@@ -229,7 +229,7 @@ paths:
         - User
       security:
         - BearerAuth: []
-      description: Allows a user to add launch credit to launch credit balance. A token must be redeemed before it can be withdrawn 
+      description: Redeem a lunch credit.
       requestBody:
           required: true
           content:
@@ -466,9 +466,9 @@ paths:
         Authorization:  
           description:   Bearer access_token
         
-  /api/organization/launch/update:
+  /api/organization/lunch/update:
     patch:
-      description: Allows an admin user to update launch balance.
+      description: Allows an admin user to update lunch balance.
       tags:
         - Organization
       security:
@@ -484,7 +484,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  launch_price:
+                  lunch_price:
                     type: string
                     example: 500
       responses:
@@ -501,7 +501,7 @@ paths:
         
   /api/withdrawal/request:
     post:
-      description: Allows an admin user to update launch balance.
+      description:  Withdraw lunch credit.
       tags:
         - Withdrawal
       security:
